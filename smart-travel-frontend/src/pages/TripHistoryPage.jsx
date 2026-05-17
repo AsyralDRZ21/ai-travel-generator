@@ -5,10 +5,14 @@ import Navbar from '../components/Navbar';
 import ReviewModal from '../components/ReviewModal';
 import './TripHistoryPage.css';
 
+const ic = (name, size = 20) => (
+  <img src={`/${name}.png`} alt={name} style={{ width: size, height: size, objectFit: 'contain' }} />
+);
+
 const STATUS_CONFIG = {
-  planned:   { label: 'Planned',   emoji: '📋', color: '#6366f1', bg: 'rgba(99,102,241,0.15)',  next: 'ongoing'   },
-  ongoing:   { label: 'Ongoing',   emoji: '✈️', color: '#f59e0b', bg: 'rgba(245,158,11,0.15)',  next: 'completed' },
-  completed: { label: 'Completed', emoji: '✅', color: '#10b981', bg: 'rgba(16,185,129,0.15)',  next: null        },
+  planned:   { label: 'Planned',   icon: 'itinerary', color: '#6366f1', bg: 'rgba(99,102,241,0.15)',  next: 'ongoing'   },
+  ongoing:   { label: 'Ongoing',   icon: 'flight',    color: '#f59e0b', bg: 'rgba(245,158,11,0.15)',  next: 'completed' },
+  completed: { label: 'Completed', icon: 'check',     color: '#10b981', bg: 'rgba(16,185,129,0.15)',  next: null        },
 };
 
 const FILTER_OPTIONS = ['all', 'planned', 'ongoing', 'completed'];
@@ -21,8 +25,8 @@ export default function TripHistoryPage() {
   const [expandedId, setExpandedId] = useState(null);
   const [filter, setFilter] = useState('all');
   const [updatingId, setUpdatingId] = useState(null);
-  const [reviewTrip, setReviewTrip] = useState(null); // trip to review
-  const [reviewedIds, setReviewedIds] = useState(new Set()); // track submitted reviews
+  const [reviewTrip, setReviewTrip] = useState(null);
+  const [reviewedIds, setReviewedIds] = useState(new Set());
 
   useEffect(() => {
     fetchHistory();
@@ -88,7 +92,6 @@ export default function TripHistoryPage() {
 
   const filtered = filter === 'all' ? history : history.filter(t => (t.status || 'planned') === filter);
 
-  // Stats
   const counts = {
     all: history.length,
     planned: history.filter(t => (t.status || 'planned') === 'planned').length,
@@ -117,7 +120,7 @@ export default function TripHistoryPage() {
               onClick={() => setFilter(f)}
               style={filter === f && cfg ? { borderColor: cfg.color, background: cfg.bg } : {}}
             >
-              <span className="stat-emoji">{f === 'all' ? '🗂️' : cfg.emoji}</span>
+              <span className="stat-emoji">{f === 'all' ? ic('file', 24) : ic(cfg.icon, 24)}</span>
               <span className="stat-count" style={filter === f && cfg ? { color: cfg.color } : {}}>{counts[f]}</span>
               <span className="stat-label">{f === 'all' ? 'All Trips' : cfg.label}</span>
             </button>
@@ -134,7 +137,7 @@ export default function TripHistoryPage() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="empty-history">
-          <div style={{ fontSize: '4rem', opacity: 0.5 }}>🧳</div>
+          <div style={{ fontSize: '4rem', opacity: 0.5 }}>{ic('itinerary', 64)}</div>
           <h3>{filter === 'all' ? 'No trips planned yet' : `No ${filter} trips`}</h3>
           <p>{filter === 'all' ? 'Use our Smart Generator to start planning your first adventure!' : `You have no trips marked as "${filter}".`}</p>
           {filter === 'all' && <Link to="/itinerary" className="btn btn-primary">Start Planning</Link>}
@@ -157,14 +160,14 @@ export default function TripHistoryPage() {
                       <h2>{trip.destination}</h2>
                       {/* Status Badge */}
                       <span className="status-badge" style={{ background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.color}` }}>
-                        {cfg.emoji} {cfg.label}
+                        {ic(cfg.icon, 16)} {cfg.label}
                       </span>
                     </div>
                     <div className="history-meta">
-                      <span className="meta-item">⏱️ {trip.duration} Days</span>
-                      <span className="meta-item">🎒 {trip.travelStyle}</span>
-                      {trip.budget > 0 && <span className="meta-item">💰 {trip.budget} {trip.currency}</span>}
-                      <span className="meta-item">📅 {formatDate(trip.createdAt)}</span>
+                      <span className="meta-item">{ic('history', 16)} {trip.duration} Days</span>
+                      <span className="meta-item">{ic('backpack', 16)} {trip.travelStyle}</span>
+                      {trip.budget > 0 && <span className="meta-item">{ic('budget', 16)} {trip.budget} {trip.currency}</span>}
+                      <span className="meta-item">{ic('calendar', 16)} {formatDate(trip.createdAt)}</span>
                     </div>
                   </div>
                 </div>
@@ -186,13 +189,12 @@ export default function TripHistoryPage() {
                             className={`tracker-step ${isActive ? 'tracker-active' : ''} ${isPast ? 'tracker-done' : ''}`}
                             style={isActive ? { background: scfg.color, borderColor: scfg.color } : isPast ? { background: scfg.color + '88', borderColor: scfg.color + '88' } : {}}
                           >
-                            <span>{scfg.emoji}</span>
+                            <span>{ic(scfg.icon, 20)}</span>
                           </div>
                           <span className="tracker-label" style={isActive ? { color: scfg.color } : isPast ? { color: scfg.color + 'aa' } : {}}>
                             {scfg.label}
                           </span>
                         </div>
-                        {/* Line rendered as flex sibling BETWEEN steps */}
                         {idx < 2 && (
                           <div
                             className={`tracker-line ${isPast || isActive ? 'tracker-line-done' : ''}`}
@@ -214,16 +216,16 @@ export default function TripHistoryPage() {
                         {day.activities && Array.isArray(day.activities) ? (
                           <ul style={{ listStyle: 'none', padding: 0, margin: '8px 0', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
                             {day.activities.map((act, idx) => (
-                              <li key={idx} style={{ marginBottom: 4 }}>📍 <strong>{act.time || `Stop ${idx + 1}`}:</strong> {act.activity}</li>
+                              <li key={idx} style={{ marginBottom: 4 }}>{ic('Maps', 16)} <strong>{act.time || `Stop ${idx + 1}`}:</strong> {act.activity}</li>
                             ))}
-                            <li style={{ marginTop: 8, color: 'var(--accent-tertiary)' }}>🏨 Lodging: {day.accommodation || 'None'}</li>
+                            <li style={{ marginTop: 8, color: 'var(--accent-tertiary)' }}>{ic('transit', 16)} Lodging: {day.accommodation || 'None'}</li>
                           </ul>
                         ) : (
                           <ul style={{ listStyle: 'none', padding: 0, margin: '8px 0', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                            {day.morning && <li style={{ marginBottom: 4 }}>🌅 <strong>Morning:</strong> {day.morning.activity}</li>}
-                            {day.afternoon && <li style={{ marginBottom: 4 }}>☀️ <strong>Afternoon:</strong> {day.afternoon.activity}</li>}
-                            {day.evening && <li style={{ marginBottom: 4 }}>🌙 <strong>Evening:</strong> {day.evening.activity}</li>}
-                            <li style={{ marginTop: 8, color: 'var(--accent-tertiary)' }}>🏨 Lodging: {day.accommodation}</li>
+                            {day.morning && <li style={{ marginBottom: 4 }}>{ic('walk', 16)} <strong>Morning:</strong> {day.morning.activity}</li>}
+                            {day.afternoon && <li style={{ marginBottom: 4 }}>{ic('walk', 16)} <strong>Afternoon:</strong> {day.afternoon.activity}</li>}
+                            {day.evening && <li style={{ marginBottom: 4 }}>{ic('walk', 16)} <strong>Evening:</strong> {day.evening.activity}</li>}
+                            <li style={{ marginTop: 8, color: 'var(--accent-tertiary)' }}>{ic('transit', 16)} Lodging: {day.accommodation}</li>
                           </ul>
                         )}
                       </div>
@@ -237,7 +239,7 @@ export default function TripHistoryPage() {
                     className="btn-history-view"
                     onClick={() => setExpandedId(expandedId === trip._id ? null : trip._id)}
                   >
-                    {expandedId === trip._id ? '🔼 Hide Details' : '🔽 View Trip'}
+                    {expandedId === trip._id ? <>{ic('check', 16)} Hide Details</> : <>{ic('itinerary', 16)} View Trip</>}
                   </button>
                   {/* Write Review — only for completed trips */}
                   {status === 'completed' && (
@@ -247,7 +249,7 @@ export default function TripHistoryPage() {
                       onClick={() => setReviewTrip(trip)}
                       disabled={reviewedIds.has(trip._id)}
                     >
-                      {reviewedIds.has(trip._id) ? '✅ Reviewed' : '⭐ Write Review'}
+                      {reviewedIds.has(trip._id) ? <>{ic('check', 16)} Reviewed</> : <>{ic('star', 16)} Write Review</>}
                     </button>
                   )}
 
@@ -259,7 +261,7 @@ export default function TripHistoryPage() {
                       onClick={() => handleUpdateStatus(trip._id, cfg.next)}
                       disabled={isUpdating}
                     >
-                      {isUpdating ? '⏳ Updating...' : `${STATUS_CONFIG[cfg.next].emoji} Mark as ${STATUS_CONFIG[cfg.next].label}`}
+                      {isUpdating ? 'Updating...' : <>{ic(STATUS_CONFIG[cfg.next].icon, 16)} Mark as {STATUS_CONFIG[cfg.next].label}</>}
                     </button>
                   )}
 
@@ -271,7 +273,7 @@ export default function TripHistoryPage() {
                       disabled={isUpdating}
                       title="Reset to Planned"
                     >
-                      ↩️
+                      {ic('back', 16)}
                     </button>
                   )}
 
@@ -279,7 +281,7 @@ export default function TripHistoryPage() {
                     className="btn-history-delete"
                     onClick={() => handleDelete(trip._id)}
                   >
-                    🗑️ Delete
+                    {ic('trash', 16)} Delete
                   </button>
                 </div>
               </div>

@@ -168,6 +168,67 @@
   margin-bottom: 20px;
 }
 
+/* ── Category Grid Picker ── */
+.cat-grid-picker {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 4px;
+}
+
+@media (max-width: 600px) {
+  .cat-grid-picker { grid-template-columns: repeat(3, 1fr); }
+}
+
+.cat-grid-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 6px;
+  background: #f9fafb;
+  border: 1.5px solid #e5e7eb;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.cat-grid-item:hover {
+  border-color: var(--accent-primary);
+  background: rgba(159, 232, 112, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(159, 232, 112, 0.2);
+}
+
+.cat-grid-item.active {
+  border-color: var(--accent-primary);
+  background: rgba(159, 232, 112, 0.15);
+  box-shadow: 0 0 0 2px rgba(159, 232, 112, 0.35);
+}
+
+.cat-grid-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.cat-grid-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #4a4a4a;
+  text-transform: capitalize;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.cat-grid-item.active .cat-grid-label {
+  color: #2d7a1a;
+  font-weight: 700;
+}
+
+
+
 /* Expense list */
 .expense-list {
   display: flex;

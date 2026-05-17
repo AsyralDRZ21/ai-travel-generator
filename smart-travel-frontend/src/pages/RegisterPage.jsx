@@ -83,7 +83,7 @@ export default function RegisterPage() {
                 name="fullName"
                 type="text"
                 className="form-input"
-                placeholder="John Doe"
+                placeholder="Sultan Selangor"
                 value={form.fullName}
                 onChange={handleChange}
                 required
@@ -112,7 +112,7 @@ export default function RegisterPage() {
                   name="password"
                   type="password"
                   className="form-input"
-                  placeholder="Min 8 chars, 1 uppercase, 1 special char"
+                  placeholder="Password"
                   value={form.password}
                   onChange={handleChange}
                   required

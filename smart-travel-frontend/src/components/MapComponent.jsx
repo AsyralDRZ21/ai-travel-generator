@@ -53,8 +53,9 @@ export default function MapComponent({ markers = [] }) {
       style={{ height: '100%', width: '100%', background: '#0a0e1a' }}
     >
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" 
+        attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        url={`https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png${import.meta.env.VITE_STADIA_KEY ? `?api_key=${import.meta.env.VITE_STADIA_KEY}` : ''}`}
+        maxZoom={20}
       />
       
       <MapBoundsFitter markers={validMarkers} />

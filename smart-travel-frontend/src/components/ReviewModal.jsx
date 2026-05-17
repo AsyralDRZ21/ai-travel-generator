@@ -127,10 +127,10 @@ export default function ReviewModal({ trip, onClose, onSubmitted }) {
             disabled={loading || rating === 0}
             style={{
               width: '100%', padding: '13px',
-              background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
-              border: 'none', borderRadius: 10, color: '#fff',
+              background: '#9FE870',
+              border: 'none', borderRadius: 10, color: '#000',
               fontSize: '0.95rem', fontWeight: 700, cursor: loading ? 'wait' : 'pointer',
-              opacity: rating === 0 ? 0.5 : 1, fontFamily: 'Inter, sans-serif',
+              opacity: rating === 0 ? 0.4 : 1, fontFamily: 'Inter, sans-serif',
               transition: 'all 0.2s ease'
             }}
           >
@@ -150,32 +150,33 @@ const overlayStyle = {
 };
 
 const modalStyle = {
-  background: 'linear-gradient(135deg, #0f172a, #1e1b4b)',
-  border: '1px solid rgba(255,255,255,0.12)',
+  background: '#ffffff',
+  border: '1px solid #eaeaea',
   borderRadius: 16, padding: 28,
   width: '100%', maxWidth: 480,
-  boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+  boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
   animation: 'fadeIn 0.2s ease'
 };
 
 const closeBtnStyle = {
-  background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)',
-  borderRadius: 8, color: 'var(--text-muted)', cursor: 'pointer',
+  background: '#f4f4f4', border: '1px solid #eaeaea',
+  borderRadius: 8, color: '#6b7280', cursor: 'pointer',
   padding: '4px 10px', fontSize: '1rem', fontFamily: 'Inter, sans-serif',
   transition: 'all 0.2s'
 };
 
 const labelStyle = {
-  display: 'block', fontSize: '0.8rem', fontWeight: 600,
-  color: 'var(--text-muted)', marginBottom: 6,
+  display: 'block', fontSize: '0.8rem', fontWeight: 700,
+  color: '#374151', marginBottom: 6,
   textTransform: 'uppercase', letterSpacing: '0.05em'
 };
 
 const inputStyle = {
   width: '100%', padding: '11px 14px',
-  background: 'rgba(255,255,255,0.06)',
-  border: '1px solid rgba(255,255,255,0.1)',
-  borderRadius: 8, color: 'var(--text-primary)',
+  background: '#ffffff',
+  border: '1.5px solid #eaeaea',
+  borderRadius: 8, color: '#161616',
   fontSize: '0.9rem', fontFamily: 'Inter, sans-serif',
-  outline: 'none', boxSizing: 'border-box'
+  outline: 'none', boxSizing: 'border-box',
+  transition: 'border-color 0.2s'
 };

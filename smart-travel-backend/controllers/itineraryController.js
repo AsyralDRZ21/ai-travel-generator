@@ -8,7 +8,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 // @access  Private
 exports.generateItinerary = async (req, res) => {
   try {
-    const { destination, duration, budget, currency, travelStyle, numberOfPeople } = req.body;
+    const { destination, duration, budget, currency, travelStyle, numberOfPeople, mustVisitPlaces } = req.body;
 
     if (!destination || !duration) {
       return res.status(400).json({ message: 'Destination and duration are required' });
@@ -18,9 +18,16 @@ exports.generateItinerary = async (req, res) => {
       ? `The total budget is approximately ${budget} ${currency || 'USD'} for ${numberOfPeople || 1} person(s).`
       : '';
 
+    const mustVisitInfo = mustVisitPlaces && mustVisitPlaces.length > 0
+      ? `IMPORTANT — The user has specifically requested to visit these places. You MUST include ALL of them in the itinerary, spread naturally across the days:
+${mustVisitPlaces.map((p, i) => `${i + 1}. ${p}`).join('\n')}
+Do not skip any of these places.`
+      : '';
+
     const prompt = `You are an expert travel planner. Create a detailed ${duration}-day travel itinerary for ${destination}.
 Travel style: ${travelStyle || 'cultural'}
 ${budgetInfo}
+${mustVisitInfo}
 Number of travelers: ${numberOfPeople || 1}
 
 Respond ONLY with a valid JSON object (no markdown, no code blocks) in this exact format:
@@ -90,6 +97,7 @@ Make sure the JSON is complete and valid for all ${duration} days. Provide rough
       currency: currency || 'USD',
       travelStyle: travelStyle || 'cultural',
       numberOfPeople: numberOfPeople || 1,
+      mustVisitPlaces: mustVisitPlaces || [],
       generatedPlan: JSON.stringify(parsedPlan)
     });
 
@@ -164,6 +172,65 @@ exports.deleteItinerary = async (req, res) => {
     const itinerary = await Itinerary.findOneAndDelete({ _id: req.params.id, userId: req.user.userId });
     if (!itinerary) return res.status(404).json({ message: 'Itinerary not found' });
     res.json({ message: 'Itinerary deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// @route   PUT /api/itinerary/:id/plan
+// @desc    Save edited itinerary plan
+// @access  Private
+exports.updatePlan = async (req, res) => {
+  try {
+    const { plan } = req.body;
+    if (!plan) return res.status(400).json({ message: 'Plan data is required' });
+
+    const itinerary = await Itinerary.findOne({ _id: req.params.id, userId: req.user.userId });
+    if (!itinerary) return res.status(404).json({ message: 'Itinerary not found' });
+
+    itinerary.generatedPlan = JSON.stringify(plan);
+    await itinerary.save();
+
+    res.json({ message: 'Itinerary updated successfully!', plan });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// @route   POST /api/itinerary/:id/suggest
+// @desc    AI suggest places to add for a specific day
+// @access  Private
+exports.suggestPlaces = async (req, res) => {
+  try {
+    const { destination, dayTitle, existingActivities } = req.body;
+
+    const existing = (existingActivities || []).map(a => a.activity).join(', ');
+    const prompt = `You are a travel expert. Suggest 3 NEW interesting places or activities to visit in ${destination} for a day titled "${dayTitle}".
+The traveler has already planned: ${existing || 'nothing yet'}.
+Suggest places that are DIFFERENT from those listed.
+
+Respond ONLY with a valid JSON array (no markdown):
+[
+  {
+    "activity": "Place Name",
+    "description": "Why it is great and what to do there (2 sentences)",
+    "time": "Suggested time e.g. 10:00 AM",
+    "estimatedCost": 20,
+    "lat": 31.2304,
+    "lng": 121.4737
+  }
+]
+Provide accurate approximate lat/lng for the real location.`;
+
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+
+    const jsonMatch = text.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) return res.status(500).json({ message: 'AI returned invalid format' });
+
+    const suggestions = JSON.parse(jsonMatch[0]);
+    res.json({ suggestions });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }

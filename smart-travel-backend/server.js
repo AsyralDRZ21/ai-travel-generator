@@ -17,7 +17,8 @@ const recommendRoutes = require('./routes/recommend');
 const adminRoutes = require('./routes/admin');
 const chatRoutes = require('./routes/chat');
 const communityRoutes = require('./routes/community');
-const dmRoutes = require('./routes/dm');
+const hotelRoutes = require('./routes/hotels');
+
 const reviewRoutes = require('./routes/reviews');
 
 app.use('/api/auth', authRoutes);
@@ -27,7 +28,8 @@ app.use('/api/recommendations', recommendRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/community', communityRoutes);
-app.use('/api/dm', dmRoutes);
+app.use('/api/hotels', hotelRoutes);
+
 app.use('/api/reviews', reviewRoutes);
 
 // Health check route

@@ -15,15 +15,22 @@ const STATUS_COLORS = {
 
 const STYLE_COLORS = ['#6366f1','#8b5cf6','#06b6d4','#10b981','#f59e0b','#ef4444','#ec4899','#14b8a6'];
 
-const STYLE_EMOJI = {
-  adventure: '🏔️', relaxation: '🏖️', cultural: '🏛️',
-  foodie: '🍜', budget: '💰', luxury: '✨'
+const STYLE_ICONS = {
+  adventure: '/adventure.png', relaxation: '/walk.png', cultural: '/history.png',
+  foodie: '/community.png', budget: '/budget.png', luxury: '/star.png',
+  roadtrip: '/car.png', backpacking: '/backpack.png'
 };
 
 function StatCard({ emoji, label, value, sub, color }) {
   return (
     <div className="stat-card" style={{ borderTop: `3px solid ${color || 'var(--accent-primary)'}` }}>
-      <div className="stat-card-emoji">{emoji}</div>
+      <div className="stat-card-emoji">
+        {emoji.endsWith('.png') ? (
+          <img src={emoji} alt={label} style={{ width: '40px', height: '40px', objectFit: 'contain', opacity: 0.85 }} />
+        ) : (
+          emoji
+        )}
+      </div>
       <div className="stat-card-value" style={{ color: color || 'var(--text-primary)' }}>{value}</div>
       <div className="stat-card-label">{label}</div>
       {sub && <div className="stat-card-sub">{sub}</div>}
@@ -83,12 +90,12 @@ export default function StatsPage() {
         {/* Header */}
         <div className="stats-header">
           <div>
-            <h1 className="stats-title">📊 My Travel Statistics</h1>
+            <h1 className="stats-title"> My Travel Statistics</h1>
             <p className="stats-subtitle">A complete overview of your travel journey with SmartTravel</p>
           </div>
           {stats && (
             <div className="member-badge">
-              <span>🗓️</span>
+              <span></span>
               <div>
                 <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '0.9rem' }}>Member for {memberDays} days</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Since {new Date(stats.memberSince).toLocaleDateString(undefined, { year: 'numeric', month: 'long' })}</div>
@@ -108,19 +115,21 @@ export default function StatsPage() {
           <>
             {/* ── TOP KPI CARDS ── */}
             <div className="stats-kpi-grid">
-              <StatCard emoji="✈️" label="Total Trips Planned" value={stats.totalTrips} color="#6366f1" />
-              <StatCard emoji="🌍" label="Destinations Explored" value={stats.uniqueDestinations.length} color="#06b6d4" />
-              <StatCard emoji="📅" label="Total Days Planned" value={stats.totalDaysPlanned} sub="across all trips" color="#8b5cf6" />
-              <StatCard emoji="✅" label="Trips Completed" value={stats.statusBreakdown.completed} color="#10b981" />
-              <StatCard emoji="💰" label="Total Budget Planned" value={`${stats.totalBudgetPlanned.toLocaleString()}`} sub="across all itineraries" color="#f59e0b" />
-              <StatCard emoji="🧾" label="Actual Money Spent" value={`${stats.totalActualSpent.toLocaleString()}`} sub="from budget tracker" color="#ef4444" />
-              <StatCard emoji="⭐" label="Reviews Written" value={stats.reviewCount} color="#f59e0b" />
-              <StatCard emoji="💬" label="Community Posts" value={stats.postCount} color="#ec4899" />
+              <StatCard emoji="/flight.png" label="Total Trips Planned" value={stats.totalTrips} color="#6366f1" />
+              <StatCard emoji="/earth.png" label="Destinations Explored" value={stats.uniqueDestinations.length} color="#06b6d4" />
+              <StatCard emoji="/calendar.png" label="Total Days Planned" value={stats.totalDaysPlanned} sub="across all trips" color="#8b5cf6" />
+              <StatCard emoji="/check.png" label="Trips Completed" value={stats.statusBreakdown.completed} color="#10b981" />
+              <StatCard emoji="/budget_plan.png" label="Total Budget Planned" value={`${stats.totalBudgetPlanned.toLocaleString()}`} sub="across all itineraries" color="#f59e0b" />
+              <StatCard emoji="/dollar.png" label="Actual Money Spent" value={`${stats.totalActualSpent.toLocaleString()}`} sub="from budget tracker" color="#ef4444" />
+              <StatCard emoji="/star.png" label="Reviews Written" value={stats.reviewCount} color="#f59e0b" />
+              <StatCard emoji="/chat.png" label="Community Posts" value={stats.postCount} color="#ec4899" />
             </div>
 
             {/* ── FAVOURITE STYLE BANNER ── */}
             <div className="fav-style-banner">
-              <div style={{ fontSize: '2.5rem' }}>{STYLE_EMOJI[stats.favouriteStyle] || '🎒'}</div>
+              <div style={{ fontSize: '2.5rem', display: 'flex', alignItems: 'center' }}>
+                <img src={STYLE_ICONS[stats.favouriteStyle] || '/backpack.png'} alt="Style" style={{ width: 64, height: 64, opacity: 0.9 }} />
+              </div>
               <div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>Your Favourite Travel Style</div>
                 <div style={{ fontSize: '1.6rem', fontWeight: 800, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', textTransform: 'capitalize' }}>
@@ -129,8 +138,8 @@ export default function StatsPage() {
               </div>
               <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 4 }}>Most visited destination</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                  📍 {stats.uniqueDestinations[0] || 'None yet'}
+                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <img src="/Maps.png" alt="Pin" style={{ width: 18, height: 18 }} /> {stats.uniqueDestinations[0] || 'None yet'}
                 </div>
               </div>
             </div>
@@ -140,7 +149,9 @@ export default function StatsPage() {
 
               {/* Trip Status Donut */}
               <div className="stats-chart-card">
-                <h3 className="chart-title">🗂️ Trip Status Breakdown</h3>
+                <h3 className="chart-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <img src="/data.png" alt="Status" style={{ width: 22, height: 22 }} /> Trip Status Breakdown
+                </h3>
                 {statusChartData.length > 0 ? (
                   <>
                     <ResponsiveContainer width="100%" height={200}>
@@ -170,7 +181,9 @@ export default function StatsPage() {
 
               {/* Travel Style Chart */}
               <div className="stats-chart-card">
-                <h3 className="chart-title">🎒 Travel Style Distribution</h3>
+                <h3 className="chart-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <img src="/backpack.png" alt="Style" style={{ width: 22, height: 22 }} /> Travel Style Distribution
+                </h3>
                 {stats.travelStyleData.length > 0 ? (
                   <ResponsiveContainer width="100%" height={220}>
                     <BarChart data={stats.travelStyleData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -192,7 +205,9 @@ export default function StatsPage() {
 
               {/* Monthly Activity */}
               <div className="stats-chart-card">
-                <h3 className="chart-title">📆 Monthly Trip Activity</h3>
+                <h3 className="chart-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <img src="/calendar.png" alt="Monthly" style={{ width: 22, height: 22 }} /> Monthly Trip Activity
+                </h3>
                 {stats.monthlyTrips.length > 0 ? (
                   <ResponsiveContainer width="100%" height={220}>
                     <BarChart data={stats.monthlyTrips} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -212,10 +227,14 @@ export default function StatsPage() {
             {/* ── DESTINATIONS LIST ── */}
             {stats.uniqueDestinations.length > 0 && (
               <div className="stats-destinations-card">
-                <h3 className="chart-title">🌍 All Destinations You've Planned</h3>
+                <h3 className="chart-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <img src="/earth.png" alt="Earth" style={{ width: 22, height: 22 }} /> All Destinations You've Planned
+                </h3>
                 <div className="destinations-tags">
                   {stats.uniqueDestinations.map((dest, idx) => (
-                    <span key={idx} className="dest-tag">📍 {dest}</span>
+                    <span key={idx} className="dest-tag" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                      <img src="/Maps.png" alt="Pin" style={{ width: 14, height: 14 }} /> {dest}
+                    </span>
                   ))}
                 </div>
               </div>

@@ -26,7 +26,6 @@ const NAV_GROUPS = [
     groupIcon: '',
     items: [
       { label: 'Community Hub', path: '/community', icon: <img src="/community.png" alt="Currency" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />  },
-      { label: 'Messages',      path: '/inbox',     icon: '📩' },
     ]
   },
   {
@@ -46,7 +45,6 @@ const ADMIN_GROUPS = [
     items: [
       { label: 'Admin Dashboard', path: '/admin',     icon: '📋' },
       { label: 'Community Hub',   path: '/community', icon: '🌍' },
-      { label: 'Messages',        path: '/inbox',     icon: '📩' },
     ]
   }
 ];

@@ -100,14 +100,7 @@ export default function PublicProfilePage() {
           </div>
         )}
 
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '32px', marginBottom: '24px' }}>
-          <button 
-            onClick={() => navigate('/inbox', { state: { startChatWith: profile } })}
-            style={{ padding: '12px 24px', background: 'var(--gradient-primary)', color: 'white', border: 'none', borderRadius: '30px', fontSize: '1.1rem', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 15px rgba(99, 102, 241, 0.4)' }}
-          >
-            ✉️ Message Traveler
-          </button>
-        </div>
+
 
         <div className="social-links-grid">
           {socialInfo?.tiktok && (

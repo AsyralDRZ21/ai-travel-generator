@@ -4,13 +4,13 @@ import './LandingPage.css';
 
 const features = [
   {
-    icon:  <img src="/bot.png" alt="Currency" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />,
+    icon:  <img src="/bot.png" alt="AI" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />,
     title: 'Smart Itinerary Generator',
     desc: 'Powered by our Core Engine, get personalized day-by-day travel plans tailored to your style and budget.',
     color: '#6366f1'
   },
   {
-    icon:  <img src="/budget.png" alt="Currency" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />,
+    icon:  <img src="/budget.png" alt="Budget" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />,
     title: 'Budget Tracker',
     desc: 'Log expenses by category, track spending against your budget in real time with visual progress bars.',
     color: '#10b981'
@@ -22,7 +22,7 @@ const features = [
     color: '#06b6d4'
   },
   {
-    icon:  <img src="/data.png" alt="Currency" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />,
+    icon:  <img src="/data.png" alt="Secure" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />,
     title: 'Secure Auth',
     desc: 'Your data is protected with JWT tokens and encrypted passwords. Login from anywhere.',
     color: '#f59e0b'
@@ -44,14 +44,14 @@ export default function LandingPage() {
           </div>
           <h1 className="hero-title">
             Travel Smarter, Not Harder <br />
-            <span className="gradient-text"> with Smart System</span>
+            <span className="gradient-text">with Smart Travel</span>
           </h1>
           <p className="hero-subtitle">
             Generate personalized itineraries, track your travel budget, and convert currencies all in one application.
           </p>
           <div className="hero-actions">
             <Link to="/register" className="btn btn-primary" id="hero-cta-register">
-              <span style={{ color: '#fff', WebkitTextFillColor: '#fff' }}> Start Planning for Free</span>
+              <span style={{ color: '#fff', WebkitTextFillColor: '#fff' }}>Start Planning for Free</span>
             </Link>
             <Link to="/login" className="btn btn-secondary" id="hero-cta-login">
               Sign In
@@ -78,8 +78,8 @@ export default function LandingPage() {
         {/* Floating cards */}
         <div className="hero-visual">
           <div className="floating-card card-1 float">
-          <div className="fc-icon">
-              <img src="/Maps.png" alt="Currency" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+            <div className="fc-icon">
+              <img src="/Maps.png" alt="Map" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
             </div>
             <div className="fc-content">
               <div className="fc-title">Tokyo, Japan</div>
@@ -87,8 +87,8 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="floating-card card-2">
-          <div className="fc-icon">
-              <img src="/budget.png" alt="Currency" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+            <div className="fc-icon">
+              <img src="/budget.png" alt="Budget" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
             </div>
             <div className="fc-content">
               <div className="fc-title">Budget: $2,400</div>
@@ -108,7 +108,7 @@ export default function LandingPage() {
               <div className="fc-sub">Live rates</div>
             </div>
           </div>
-          </div>
+        </div>
       </section>
 
       {/* Features */}
@@ -140,7 +140,7 @@ export default function LandingPage() {
           <h2>Ready to explore the world?</h2>
           <p>Join Smart Travel and let our algorithm plan your next adventure.</p>
           <Link to="/register" className="btn btn-primary" style={{ marginTop: 8 }}>
-            <span style={{ color: '#fff', WebkitTextFillColor: '#fff' }}> Start Your Journey</span>
+            <span style={{ color: '#fff', WebkitTextFillColor: '#fff' }}>Start Your Journey</span>
           </Link>
         </div>
       </section>

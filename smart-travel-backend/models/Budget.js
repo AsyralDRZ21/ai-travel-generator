@@ -5,10 +5,10 @@ const expenseSchema = new mongoose.Schema({
   amount: { type: Number, required: true, min: 0 },
   category: {
     type: String,
-    enum: ['accommodation', 'food', 'transport', 'activities', 'shopping', 'health', 'other'],
     default: 'other'
   },
-  date: { type: Date, default: Date.now }
+  startDate: { type: Date, default: null },
+  endDate:   { type: Date, default: null }
 });
 
 const budgetSchema = new mongoose.Schema({

@@ -34,11 +34,21 @@ export default function RecommendPage() {
     }
   };
 
-  // Helper to pick a random emoji based on the city for the placeholder
-  const getCityEmoji = (index) => {
-    const emojis = ['🗽', '🗼', '🏯', '🏰', '🗿', '🏔️', '🏖️', '🏜️', '🕌'];
-    return emojis[index % emojis.length];
+  // Get flag image URL from country code returned by AI
+  const getFlagUrl = (countryCode) => {
+    if (!countryCode) return null;
+    return `https://flagcdn.com/w640/${countryCode.toLowerCase()}.png`;
   };
+
+  // Fallback gradient colors per card index
+  const cardGradients = [
+    'linear-gradient(135deg, #1a1a2e, #16213e)',
+    'linear-gradient(135deg, #0f3460, #533483)',
+    'linear-gradient(135deg, #1b1b2f, #2b2d42)',
+    'linear-gradient(135deg, #2d6a4f, #1b4332)',
+    'linear-gradient(135deg, #7b2d8b, #4a0e8f)',
+    'linear-gradient(135deg, #c77dff, #7b2ff7)',
+  ];
 
   return (
     <div className="recommend-container">
@@ -74,8 +84,37 @@ export default function RecommendPage() {
         <div className="recommendations-grid">
           {recommendations.map((dest, i) => (
             <div className="dest-card" key={i}>
-              <div className="dest-image-placeholder">
-                {getCityEmoji(i)}
+              <div className="dest-image-placeholder" style={{ background: cardGradients[i % cardGradients.length], position: 'relative', overflow: 'hidden' }}>
+                {dest.countryCode ? (
+                  <>
+                    <img
+                      src={getFlagUrl(dest.countryCode)}
+                      alt={`${dest.destination} flag`}
+                      style={{
+                        width: '100%', height: '100%', objectFit: 'cover',
+                        opacity: 0.6, position: 'absolute', inset: 0
+                      }}
+                      onError={e => { e.target.style.display = 'none'; }}
+                    />
+                    <div style={{
+                      position: 'absolute', inset: 0,
+                      background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 60%)',
+                      display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-start',
+                      padding: '14px 16px'
+                    }}>
+                      <span style={{
+                        fontSize: '0.8rem', fontWeight: 700, color: '#fff',
+                        background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)',
+                        padding: '4px 10px', borderRadius: 20,
+                        border: '1px solid rgba(255,255,255,0.2)'
+                      }}>
+                        🌍 {dest.destination.split(',')[1]?.trim() || dest.destination}
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <span style={{ fontSize: '4rem', zIndex: 1, position: 'relative' }}>🌍</span>
+                )}
               </div>
               <div className="dest-content">
                 <h3 className="dest-title">{dest.destination}</h3>

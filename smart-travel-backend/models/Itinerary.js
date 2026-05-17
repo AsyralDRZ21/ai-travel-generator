@@ -42,6 +42,10 @@ const itinerarySchema = new mongoose.Schema({
   generatedPlan: {
     type: String, // Store as JSON string from Gemini
     required: true
+  },
+  mustVisitPlaces: {
+    type: [String],
+    default: []
   }
 }, { timestamps: true });
 

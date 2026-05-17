@@ -245,17 +245,64 @@ a:hover { color: var(--accent-secondary); }
   text-transform: uppercase;
 }
 
-.form-input, .form-select, .form-textarea {
+.form-input, .form-textarea {
   width: 100%;
   padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--glass-border);
+  background: #f9fafb;
+  border: 1.5px solid #d1d5db;
   border-radius: var(--radius-md);
-  color: var(--text-primary);
+  color: #161616;
   font-family: 'Inter', sans-serif;
   font-size: 0.95rem;
   transition: var(--transition);
   outline: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.form-input:hover, .form-textarea:hover {
+  border-color: #9FE870;
+  background: #ffffff;
+}
+
+/* Select dropdown — fully styled for light theme */
+.form-select {
+  width: 100%;
+  padding: 12px 16px;
+  background: #f9fafb;
+  border: 1.5px solid #d1d5db;
+  border-radius: var(--radius-md);
+  color: #161616;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  transition: var(--transition);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239FE870' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+
+.form-select:hover {
+  border-color: #9FE870;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239FE870' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+
+.form-select:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(159, 232, 112, 0.25);
+}
+
+.form-select option {
+  background: #ffffff;
+  color: #161616;
+  padding: 10px;
 }
 
 .form-input::placeholder,
@@ -264,16 +311,10 @@ a:hover { color: var(--accent-secondary); }
 }
 
 .form-input:focus,
-.form-select:focus,
 .form-textarea:focus {
   border-color: var(--accent-primary);
-  background: rgba(99, 102, 241, 0.08);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
-}
-
-.form-select option {
-  background: #1e2435;
-  color: var(--text-primary);
+  background: rgba(159, 232, 112, 0.05);
+  box-shadow: 0 0 0 3px rgba(159, 232, 112, 0.15);
 }
 
 .form-textarea {

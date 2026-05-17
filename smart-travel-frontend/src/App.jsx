@@ -18,7 +18,7 @@ import TripHistoryPage from './pages/TripHistoryPage';
 import CommunityPage  from './pages/CommunityPage';
 import PublicProfilePage from './pages/PublicProfilePage';
 import AdminPage      from './pages/AdminPage';
-import InboxPage      from './pages/InboxPage';
+
 import StatsPage      from './pages/StatsPage';
 import ChatWidget     from './components/ChatWidget';
 
@@ -69,7 +69,7 @@ function AppRoutes() {
         <Route path="/user/:userId" element={<PrivateRoute><PublicProfilePage /></PrivateRoute>} />
         <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
         <Route path="/stats" element={<PrivateRoute><StatsPage /></PrivateRoute>} />
-        <Route path="/inbox" element={<PrivateRoute><InboxPage /></PrivateRoute>} />
+
         <Route path="/admin" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

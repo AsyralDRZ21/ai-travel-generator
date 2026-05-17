@@ -13,7 +13,13 @@ export default function WeatherWidget({ destination }) {
 
   useEffect(() => {
     if (!destination) return;
-    fetchWeather(destination);
+
+    // Extract first city only — handles "Tokyo and Osaka", "Paris, France", "New York & Boston"
+    const firstCity = destination
+      .split(/\s+and\s+|\s*,\s*|\s*&\s*|\s*\+\s*/i)[0]  // split on "and", comma, &, +
+      .trim();
+
+    fetchWeather(firstCity || destination);
   }, [destination]);
 
   const fetchWeather = async (city) => {

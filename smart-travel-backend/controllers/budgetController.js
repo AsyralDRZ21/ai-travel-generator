@@ -40,14 +40,14 @@ exports.getBudgets = async (req, res) => {
 // @access  Private
 exports.addExpense = async (req, res) => {
   try {
-    const { description, amount, category, date } = req.body;
+    const { description, amount, category, startDate, endDate } = req.body;
     if (!description || amount === undefined) {
       return res.status(400).json({ message: 'Description and amount are required' });
     }
     const budget = await Budget.findOne({ _id: req.params.id, userId: req.user.userId });
     if (!budget) return res.status(404).json({ message: 'Budget not found' });
 
-    budget.expenses.push({ description, amount, category, date });
+    budget.expenses.push({ description, amount, category, startDate, endDate });
     await budget.save();
     res.json({ message: 'Expense added!', budget });
   } catch (error) {

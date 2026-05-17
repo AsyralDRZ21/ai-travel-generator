@@ -21,13 +21,14 @@ exports.getRecommendations = async (req, res) => {
 
     const prompt = `Act as an expert travel agent. 
 The user is interested in these travel styles: ${styleString}.
-Recommend 3 amazing destinations around the world that perfectly match these interests.
+Recommend 6 diverse and amazing destinations around the world that perfectly match these interests. Make sure they are from different continents/regions.
 
-Respond EXACTLY with a JSON array of 3 objects containing details for each destination.
+Respond EXACTLY with a JSON array of 6 objects containing details for each destination.
 Format requirements:
 [
   {
     "destination": "City, Country",
+    "countryCode": "2-letter ISO country code (e.g., JP for Japan, MY for Malaysia, FR for France)",
     "description": "A captivating 2-sentence description of why it fits the user's interests.",
     "matchReason": "Why it matches: ${styleString}",
     "bestTimeToVisit": "e.g., Spring or Fall",

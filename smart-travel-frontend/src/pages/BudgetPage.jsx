@@ -5,28 +5,39 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import './BudgetPage.css';
 
 const CATEGORIES = [
-  'accommodation', 'food', 'transport', 'activities', 'shopping', 
-  'health', 'flights', 'visa', 'education', 'entertainment', 
-  'gadgets', 'investment', 'other'
+  'flights', 'lodging', 'car rental', 'transit',
+  'food', 'drinks', 'sightseeing', 'activities',
+  'shopping', 'gas', 'groceries', 'other'
 ];
+
 const CAT_ICONS = {
-  accommodation: '🏨',
-  food: '🍜',
-  transport: '🚌',
-  activities: '🎯',
-  shopping: '🛍️',
-  health: '💊',
-  flights: '✈️',
-  visa: '🛂',
-  education: '🎓',
-  entertainment: '🎮',
-  gadgets: '💻',
-  investment: '📈',
-  other: '📦'
+  flights:    '✈️',
+  lodging:    '🛌',
+  'car rental': '🚗',
+  transit:    '🚍',
+  food:       '🍽️',
+  drinks:     '🍷',
+  sightseeing:'📸',
+  activities: '🎭',
+  shopping:   '🛍️',
+  gas:        '⛽',
+  groceries:  '🛒',
+  other:      '🗒️'
 };
+
 const CAT_COLORS = {
-  accommodation: '#6366f1', food: '#10b981', transport: '#06b6d4',
-  activities: '#f59e0b', shopping: '#8b5cf6', health: '#ef4444', other: '#64748b'
+  flights:      '#6366f1',
+  lodging:      '#8b5cf6',
+  'car rental': '#06b6d4',
+  transit:      '#0ea5e9',
+  food:         '#f59e0b',
+  drinks:       '#ec4899',
+  sightseeing:  '#10b981',
+  activities:   '#f97316',
+  shopping:     '#a855f7',
+  gas:          '#64748b',
+  groceries:    '#84cc16',
+  other:        '#94a3b8'
 };
 
 // Custom label for the pie chart showing percentage
@@ -54,7 +65,7 @@ export default function BudgetPage() {
   const [error, setError] = useState('');
 
   const [newBudget, setNewBudget] = useState({ tripName: '', totalBudget: '', currency: 'MYR' });
-  const [newExpense, setNewExpense] = useState({ description: '', amount: '', category: 'food', date: '' });
+  const [newExpense, setNewExpense] = useState({ description: '', amount: '', category: 'flights', startDate: '', endDate: '' });
 
   useEffect(() => { fetchBudgets(); }, []);
 
@@ -93,7 +104,7 @@ export default function BudgetPage() {
       const updated = data.budget;
       setBudgets(prev => prev.map(b => b._id === updated._id ? updated : b));
       setActiveBudget(updated);
-      setNewExpense({ description: '', amount: '', category: 'food', date: '' });
+      setNewExpense({ description: '', amount: '', category: 'flights', startDate: '', endDate: '' });
       setShowExpenseForm(false);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to add expense');
@@ -419,27 +430,42 @@ export default function BudgetPage() {
                             required
                           />
                         </div>
-                        <div className="form-group" style={{ marginBottom: 0 }}>
+                        <div className="form-group" style={{ marginBottom: 0, gridColumn: '1/-1' }}>
                           <label className="form-label">Category</label>
-                          <select
-                            id="expense-category"
-                            className="form-select"
-                            value={newExpense.category}
-                            onChange={e => setNewExpense({ ...newExpense, category: e.target.value })}
-                          >
+                          <div className="cat-grid-picker">
                             {CATEGORIES.map(c => (
-                              <option key={c} value={c}>{CAT_ICONS[c]} {c}</option>
+                              <button
+                                key={c}
+                                type="button"
+                                id={`cat-${c}`}
+                                className={`cat-grid-item ${newExpense.category === c ? 'active' : ''}`}
+                                onClick={() => setNewExpense({ ...newExpense, category: c })}
+                              >
+                                <span className="cat-grid-icon">{CAT_ICONS[c]}</span>
+                                <span className="cat-grid-label">{c}</span>
+                              </button>
                             ))}
-                          </select>
+                          </div>
                         </div>
                         <div className="form-group" style={{ marginBottom: 0 }}>
-                          <label className="form-label">Date</label>
+                          <label className="form-label">Start Date</label>
                           <input
-                            id="expense-date"
+                            id="expense-start-date"
                             type="date"
                             className="form-input"
-                            value={newExpense.date}
-                            onChange={e => setNewExpense({ ...newExpense, date: e.target.value })}
+                            value={newExpense.startDate}
+                            onChange={e => setNewExpense({ ...newExpense, startDate: e.target.value })}
+                          />
+                        </div>
+                        <div className="form-group" style={{ marginBottom: 0 }}>
+                          <label className="form-label">End Date</label>
+                          <input
+                            id="expense-end-date"
+                            type="date"
+                            className="form-input"
+                            min={newExpense.startDate}
+                            value={newExpense.endDate}
+                            onChange={e => setNewExpense({ ...newExpense, endDate: e.target.value })}
                           />
                         </div>
                       </div>
@@ -477,9 +503,13 @@ export default function BudgetPage() {
                               <span className="badge badge-primary" style={{ fontSize: '0.7rem', textTransform: 'capitalize' }}>
                                 {exp.category}
                               </span>
-                              {exp.date && (
-                                <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-                                  {new Date(exp.date).toLocaleDateString()}
+                              {(exp.startDate || exp.endDate) && (
+                                <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: 4 }}>
+                                  📅
+                                  {exp.startDate ? new Date(exp.startDate).toLocaleDateString() : '?'}
+                                  {exp.endDate && exp.endDate !== exp.startDate && (
+                                    <> → {new Date(exp.endDate).toLocaleDateString()}</>
+                                  )}
                                 </span>
                               )}
                             </div>

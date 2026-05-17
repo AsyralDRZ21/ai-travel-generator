@@ -127,7 +127,7 @@ export default function ProfilePage() {
         
         {/* Personal Details Panel */}
         <div className="glass-panel">
-          <h2 className="panel-title">🛡️ Account Details</h2>
+          <h2 className="panel-title"> Account Details</h2>
           
           <div className="form-group">
             <label className="form-label">Full Name</label>
@@ -169,7 +169,7 @@ export default function ProfilePage() {
 
         {/* Social Links Panel */}
         <div className="glass-panel">
-          <h2 className="panel-title">📱 Public Identity</h2>
+          <h2 className="panel-title"> Public Identity</h2>
           <p className="form-label mb-3">Visible on your Community Public Profile</p>
           
           <div className="form-group">
@@ -223,7 +223,7 @@ export default function ProfilePage() {
 
         {/* Travel Preferences Panel - Full Width */}
         <div className="glass-panel pref-panel">
-          <h2 className="panel-title">❤️ Travel Preferences</h2>
+          <h2 className="panel-title"> Travel Preferences</h2>
           <p className="form-label mb-3">What kind of traveler are you?(Select multiple)</p>
           
           <div className="preference-grid">
@@ -245,7 +245,7 @@ export default function ProfilePage() {
             className="btn-primary mt-4"
             disabled={loading}
           >
-            {loading ? 'Saving Changes...' : '💾 Save Profile'}
+            {loading ? 'Saving Changes...' : ' Save Profile'}
           </button>
         </div>
 

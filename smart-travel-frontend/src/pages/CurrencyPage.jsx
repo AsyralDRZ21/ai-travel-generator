@@ -199,7 +199,7 @@ export default function CurrencyPage() {
                   style={{ width: '100%', padding: '14px', fontSize: '1rem', marginTop: 16 }}
                   disabled={loading}
                 >
-                  {loading ? <><span className="spinner spinner-sm" /> Getting rates...</> : '💱 Convert'}
+                  {loading ? <><span className="spinner spinner-sm" /> Getting rates...</> : ' Convert'}
                 </button>
               </form>
 
@@ -228,7 +228,7 @@ export default function CurrencyPage() {
             {/* Quick pairs */}
             <div className="glass-card" style={{ padding: 24 }}>
               <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 16 }}>
-                🔗 QUICK CONVERT
+                 QUICK CONVERT
               </h3>
               <div className="quick-pairs">
                 {POPULAR_PAIRS.map(pair => (
@@ -248,7 +248,7 @@ export default function CurrencyPage() {
           <div className="currency-sidebar">
             <div className="glass-card" style={{ padding: 24 }}>
               <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 16 }}>
-                📊 USD LIVE RATES
+                 USD LIVE RATES
               </h3>
               {Object.keys(popularRates).length > 0 ? (
                 <div className="rates-table">
@@ -284,7 +284,7 @@ export default function CurrencyPage() {
 
             {/* Travel money tip */}
             <div className="glass-card money-tip-card" style={{ padding: 24 }}>
-              <div style={{ fontSize: '2rem', marginBottom: 12 }}>💡</div>
+              <div style={{ fontSize: '2rem', marginBottom: 12 }}></div>
               <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: 8 }}>Travel Money Tips</h3>
               <ul className="money-tips">
                 <li>Always compare rates before exchanging</li>

@@ -1,0 +1,661 @@
+/* ============================================================
+   PUBLIC PROFILE PAGE — Modern, Clean Wise-Green Card Design
+   ============================================================ */
+
+.public-profile-wrapper {
+  min-height: 100vh;
+  background: var(--bg-primary, #ffffff);
+  color: var(--text-primary, #161616);
+  font-family: inherit;
+}
+
+.public-profile-container {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 100px 24px 70px;
+}
+
+/* ── LOADING & EMPTY STATES ── */
+.public-profile-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 16px;
+  color: var(--text-secondary, #4a4a4a);
+}
+
+.public-empty-card {
+  background: #ffffff;
+  border: 1px solid var(--glass-border, #eaeaea);
+  border-radius: 24px;
+  padding: 60px 24px;
+  text-align: center;
+  max-width: 500px;
+  margin: 60px auto;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+.public-empty-icon {
+  font-size: 3.2rem;
+  margin-bottom: 16px;
+}
+
+.public-empty-card h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary, #161616);
+  margin-bottom: 8px;
+}
+
+.public-empty-card p {
+  color: var(--text-secondary, #666);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.btn-primary-back {
+  background: #163300;
+  color: #9FE870;
+  font-weight: 700;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.92rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(22, 51, 0, 0.25);
+}
+
+.btn-primary-back:hover {
+  background: #1f4700;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(22, 51, 0, 0.35);
+}
+
+/* ── TOP NAV BREADCRUMB ── */
+.public-nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.btn-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid var(--glass-border, #eaeaea);
+  padding: 9px 18px;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary, #161616);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.btn-back-link .arrow {
+  font-size: 1.1rem;
+  transition: transform 0.2s ease;
+}
+
+.btn-back-link:hover {
+  background: #f8fafc;
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.btn-back-link:hover .arrow {
+  transform: translateX(-3px);
+}
+
+.public-breadcrumb-tag {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary, #666);
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--glass-border, #eaeaea);
+  padding: 5px 14px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+
+/* ── HERO HEADER CARD ── */
+.public-hero-card {
+  background: linear-gradient(135deg, rgba(159, 232, 112, 0.12) 0%, rgba(246, 248, 246, 0.75) 100%);
+  border: 1px solid rgba(159, 232, 112, 0.35);
+  border-radius: 24px;
+  padding: 32px 36px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03);
+  position: relative;
+  overflow: hidden;
+}
+
+.public-hero-top {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.public-avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.public-avatar-circle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #163300 0%, #1a4d00 100%);
+  border: 3.5px solid #9FE870;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(159, 232, 112, 0.35);
+}
+
+.public-avatar-initial {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: #9FE870;
+  line-height: 1;
+}
+
+.public-status-badge {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #22c55e;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.public-hero-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.public-name-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.public-name {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--text-primary, #161616);
+  margin: 0;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.public-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.badge-pill {
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+  letter-spacing: 0.01em;
+}
+
+.badge-verified {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.badge-admin {
+  background: rgba(245, 158, 11, 0.15);
+  color: #b45309;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badge-muslim {
+  background: rgba(34, 197, 94, 0.15);
+  color: #15803d;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.public-meta-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.meta-pill {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary, #4a4a4a);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 4px 12px;
+  border-radius: 999px;
+  backdrop-filter: blur(4px);
+}
+
+/* ── SOCIAL BAR STRIP ── */
+.public-social-strip {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.social-strip-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-secondary, #4b5563);
+  letter-spacing: 0.02em;
+}
+
+.public-social-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.social-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: #ffffff;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.social-pill-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  color: #ffffff;
+}
+
+.social-pill-btn .social-icon {
+  font-size: 1rem;
+}
+
+.social-handle {
+  font-size: 0.8rem;
+  font-weight: 500;
+  opacity: 0.9;
+  margin-left: 2px;
+}
+
+.pill-tiktok {
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.pill-instagram {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+.pill-whatsapp {
+  background: #25D366;
+}
+
+.social-empty-hint {
+  font-size: 0.84rem;
+  color: var(--text-secondary, #777);
+  font-style: italic;
+}
+
+/* ── 2-COLUMN CARDS GRID ── */
+.public-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.public-card {
+  background: #ffffff;
+  border: 1px solid var(--glass-border, #eaeaea);
+  border-radius: 20px;
+  padding: 26px 28px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+}
+
+.public-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.public-card-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.header-meta {
+  flex: 1;
+}
+
+.public-card-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary, #161616);
+  margin: 0 0 3px;
+  letter-spacing: -0.01em;
+}
+
+.public-card-subtitle {
+  font-size: 0.82rem;
+  color: var(--text-secondary, #666);
+  margin: 0;
+}
+
+.public-counter-pill {
+  margin-left: auto;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #163300;
+  background: #9FE870;
+  padding: 4px 12px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* ── DETAILS LIST ── */
+.public-details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.public-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 15px;
+  border-radius: 14px;
+  background: #fafafa;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.detail-item-icon {
+  font-size: 1.35rem;
+  flex-shrink: 0;
+}
+
+.detail-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.detail-item-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--text-secondary, #777);
+  letter-spacing: 0.04em;
+}
+
+.detail-item-value {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-primary, #161616);
+}
+
+.status-highlight.active {
+  color: #15803d;
+  font-weight: 700;
+}
+
+.status-highlight.neutral {
+  color: var(--text-secondary, #666);
+}
+
+/* ── TRAVEL STYLES CLOUD ── */
+.public-styles-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.public-style-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 9px 16px;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #334155;
+  transition: all 0.2s ease;
+}
+
+.public-style-badge:hover {
+  background: rgba(159, 232, 112, 0.18);
+  border-color: #9FE870;
+  color: #163300;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(159, 232, 112, 0.2);
+}
+
+.style-badge-icon {
+  font-size: 1.05rem;
+}
+
+.public-subtle-empty {
+  text-align: center;
+  padding: 36px 16px;
+  color: var(--text-secondary, #777);
+  font-size: 0.88rem;
+}
+
+.public-subtle-empty .subtle-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 8px;
+  opacity: 0.5;
+}
+
+/* ── BROADCASTS CARD (COMMUNITY ACTIVITY) ── */
+.public-broadcasts-card {
+  background: #ffffff;
+  border: 1px solid var(--glass-border, #eaeaea);
+  border-radius: 20px;
+  padding: 26px 28px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.public-posts-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.public-post-bubble {
+  background: #fafafa;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  padding: 20px 22px;
+  transition: all 0.2s ease;
+}
+
+.public-post-bubble:hover {
+  background: #ffffff;
+  border-color: rgba(159, 232, 112, 0.6);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.05);
+}
+
+.post-bubble-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.post-author-mini {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.post-mini-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #163300;
+  color: #9FE870;
+  font-weight: 800;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #9FE870;
+}
+
+.post-author-name {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary, #161616);
+  display: block;
+  line-height: 1.2;
+}
+
+.post-timestamp {
+  font-size: 0.76rem;
+  color: var(--text-secondary, #777);
+  display: block;
+  margin-top: 1px;
+}
+
+.post-bubble-content {
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: #1e293b;
+  white-space: pre-wrap;
+  margin-bottom: 14px;
+}
+
+.post-bubble-footer {
+  display: flex;
+  align-items: center;
+}
+
+.post-like-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #e11d48;
+  background: #fff1f2;
+  border: 1px solid #ffe4e6;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.public-broadcast-empty {
+  text-align: center;
+  padding: 48px 20px;
+}
+
+.empty-broadcast-icon {
+  font-size: 2.8rem;
+  margin-bottom: 12px;
+  opacity: 0.7;
+}
+
+.public-broadcast-empty h3 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-primary, #161616);
+  margin: 0 0 6px;
+}
+
+.public-broadcast-empty p {
+  font-size: 0.88rem;
+  color: var(--text-secondary, #666);
+  margin: 0;
+}
+
+/* ── RESPONSIVE DESIGN ── */
+@media (max-width: 820px) {
+  .public-profile-container {
+    padding: 85px 16px 50px;
+  }
+
+  .public-hero-card {
+    padding: 24px 20px;
+  }
+
+  .public-hero-top {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .public-name-row {
+    justify-content: center;
+  }
+
+  .public-badge-group {
+    justify-content: center;
+  }
+
+  .public-meta-pills {
+    justify-content: center;
+  }
+
+  .public-social-strip {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+  }
+
+  .public-social-buttons {
+    justify-content: center;
+  }
+
+  .public-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .public-card,
+  .public-broadcasts-card {
+    padding: 22px 20px;
+  }
+}

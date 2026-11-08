@@ -1,0 +1,458 @@
+/* ══════════════════════════════════════════════════════
+   MUSLIM TRAVEL PAGE — FULL STYLESHEET
+══════════════════════════════════════════════════════ */
+
+.mtp-page { min-height: 100vh; background: var(--bg-primary); }
+
+.mtp-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 90px 32px 60px;
+}
+
+/* ── HEADER ── */
+.mtp-header { text-align: center; margin-bottom: 36px; }
+.mtp-header-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #1a5f3c, #22c55e);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 5px 16px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+}
+.mtp-title {
+  font-size: 2.4rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #22c55e, #86efac);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 10px;
+}
+.mtp-subtitle { color: var(--text-secondary); font-size: 1rem; margin: 0; }
+
+/* ── DESTINATION CARD ── */
+.mtp-dest-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 28px;
+}
+.mtp-dest-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 10px; }
+.mtp-dest-note { color: var(--text-muted); font-size: 0.82rem; margin: 0; }
+
+/* ── INPUTS ── */
+.mtp-input-group { display: flex; flex-direction: column; gap: 6px; }
+.mtp-input-group label { font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); }
+.mtp-input {
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+.mtp-input:focus { border-color: #22c55e; }
+.mtp-select {
+  background: var(--bg-secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  padding: 10px 14px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* ── TAB NAV ── */
+.mtp-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+  background: var(--bg-card);
+  padding: 10px;
+  border-radius: 16px;
+  border: 1px solid var(--glass-border);
+}
+.mtp-tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+  justify-content: center;
+}
+.mtp-tab:hover { background: rgba(34,197,94,0.1); color: #22c55e; }
+.mtp-tab-active { background: linear-gradient(135deg, #15803d, #22c55e) !important; color: #fff !important; }
+.mtp-tab-icon { font-size: 1.1rem; }
+
+/* ── BUTTON ── */
+.mtp-btn {
+  background: linear-gradient(135deg, #15803d, #22c55e);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 26px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.mtp-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.mtp-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* ── ERROR ── */
+.mtp-error {
+  background: rgba(239,68,68,0.12);
+  border: 1px solid rgba(239,68,68,0.35);
+  border-radius: 10px;
+  color: #f87171;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+}
+.mtp-empty { color: var(--text-muted); font-size: 0.9rem; padding: 40px; text-align: center; }
+
+/* ── SECTION ── */
+.mtp-section { animation: fadeInUp 0.3s ease; }
+.mtp-section-header { margin-bottom: 20px; }
+.mtp-section-header h2 { font-size: 1.5rem; font-weight: 800; margin: 0 0 6px; }
+.mtp-section-header p  { color: var(--text-secondary); font-size: 0.9rem; margin: 0; }
+.mtp-controls { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 24px; }
+.mtp-count { color: #22c55e; font-weight: 600; font-size: 0.9rem; margin-bottom: 14px; }
+
+/* ── MUSLIM ADVISORY BOX ── */
+.mtp-muslim-advisory {
+  background: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(21,128,61,0.08));
+  border: 1px solid rgba(34,197,94,0.3);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin: 14px 0;
+}
+.mtp-muslim-advisory strong { color: #22c55e; display: block; margin-bottom: 6px; }
+.mtp-muslim-advisory p { margin: 0; font-size: 0.9rem; color: var(--text-secondary); }
+
+/* ════ PRAYER TIMES ════ */
+.mtp-prayer-result { margin-top: 8px; }
+.mtp-prayer-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border-radius: 12px;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+.mtp-hijri { color: #22c55e; font-weight: 600; }
+.mtp-prayer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.mtp-prayer-card {
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 18px 12px;
+  text-align: center;
+  transition: all 0.2s;
+}
+.mtp-prayer-card:hover { border-color: #22c55e; transform: translateY(-2px); }
+.mtp-prayer-imsak { border-color: rgba(168,85,247,0.4); background: rgba(168,85,247,0.06); }
+.mtp-prayer-icon { font-size: 1.6rem; margin-bottom: 8px; }
+.mtp-prayer-name { font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+.mtp-prayer-time { font-size: 1.3rem; font-weight: 800; color: #22c55e; }
+.mtp-qibla-note {
+  background: var(--bg-card);
+  border: 1px solid rgba(34,197,94,0.2);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+/* ════ MOSQUES ════ */
+.mtp-list { display: flex; flex-direction: column; gap: 12px; }
+.mtp-mosque-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 16px;
+  transition: all 0.2s;
+}
+.mtp-mosque-card:hover { border-color: #22c55e; }
+.mtp-mosque-icon { font-size: 2rem; flex-shrink: 0; }
+.mtp-mosque-info { flex: 1; }
+.mtp-mosque-info h3 { margin: 0 0 4px; font-size: 1rem; font-weight: 700; }
+.mtp-mosque-addr { margin: 0 0 4px; font-size: 0.85rem; color: var(--text-secondary); }
+.mtp-mosque-hours { margin: 0 0 8px; font-size: 0.82rem; color: var(--text-muted); }
+.mtp-mosque-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.mtp-tag { font-size: 0.75rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; }
+.mtp-tag-green { background: rgba(34,197,94,0.15); color: #22c55e; }
+.mtp-tag-purple { background: rgba(168,85,247,0.15); color: #a855f7; }
+.mtp-map-btn {
+  background: rgba(34,197,94,0.12);
+  color: #22c55e;
+  border: 1px solid rgba(34,197,94,0.3);
+  border-radius: 8px;
+  padding: 8px 14px;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.mtp-map-btn:hover { background: rgba(34,197,94,0.25); }
+
+/* ════ HALAL FOOD ════ */
+.mtp-food-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.mtp-food-card {
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+.mtp-food-card:hover { border-color: #22c55e; transform: translateY(-2px); }
+.mtp-food-img { width: 100%; height: 160px; object-fit: cover; }
+.mtp-food-img-placeholder { width: 100%; height: 160px; background: linear-gradient(135deg, #1a5f3c22, #22c55e22); display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+.mtp-food-body { padding: 14px; }
+.mtp-food-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+.mtp-food-top h3 { margin: 0; font-size: 0.95rem; font-weight: 700; }
+.mtp-halal-badge { background: #15803d; color: #fff; font-size: 0.65rem; font-weight: 800; padding: 3px 8px; border-radius: 4px; white-space: nowrap; letter-spacing: 0.05em; }
+.mtp-food-addr { margin: 0 0 8px; font-size: 0.82rem; color: var(--text-secondary); }
+.mtp-food-meta { display: flex; gap: 10px; flex-wrap: wrap; font-size: 0.8rem; color: var(--text-secondary); align-items: center; }
+.mtp-open-badge { font-size: 0.75rem; font-weight: 600; }
+.mtp-open-badge.open { color: #22c55e; }
+.mtp-open-badge.closed { color: #ef4444; }
+
+/* ════ WEATHER ════ */
+.mtp-weather-result { background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 16px; padding: 24px; }
+.mtp-weather-title { margin: 0 0 20px; font-size: 1.1rem; font-weight: 700; }
+.mtp-weather-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+.mtp-weather-stat {
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.mtp-weather-stat.hot  { background: rgba(239,68,68,0.1);  border: 1px solid rgba(239,68,68,0.25); }
+.mtp-weather-stat.cool { background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25); }
+.mtp-weather-stat.rain { background: rgba(34,197,94,0.1);  border: 1px solid rgba(34,197,94,0.25); }
+.mtp-weather-stat.wind { background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.25); }
+.mtp-ws-val { font-size: 1.6rem; font-weight: 800; }
+.mtp-ws-label { font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; }
+.mtp-weather-condition { display: flex; gap: 12px; align-items: center; margin-bottom: 14px; font-size: 0.88rem; color: var(--text-secondary); }
+.mtp-condition-badge { background: rgba(34,197,94,0.15); color: #22c55e; border-radius: 999px; padding: 4px 14px; font-size: 0.82rem; font-weight: 700; }
+.mtp-packing-tips { background: var(--bg-secondary); border-radius: 10px; padding: 14px 16px; }
+.mtp-packing-tips strong { display: block; margin-bottom: 8px; font-size: 0.88rem; }
+.mtp-packing-tips ul { margin: 0; padding-left: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+.mtp-packing-tips li { background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 8px; padding: 5px 12px; font-size: 0.82rem; color: var(--text-secondary); }
+
+/* ════ VISA ════ */
+.mtp-visa-card { background: var(--bg-card); border: 1px solid var(--glass-border); border-radius: 16px; padding: 26px; }
+.mtp-visa-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 12px; flex-wrap: wrap; }
+.mtp-visa-header h3 { margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--text-primary); }
+.mtp-visa-badge { padding: 6px 18px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; }
+.visa-free     { background: rgba(34,197,94,0.15);  color: #15803d;  border: 1px solid rgba(34,197,94,0.3); }
+.visa-arrival  { background: rgba(245,158,11,0.15); color: #b45309; border: 1px solid rgba(245,158,11,0.3); }
+.visa-required { background: rgba(239,68,68,0.12);  color: #dc2626; border: 1px solid rgba(239,68,68,0.25); }
+.visa-keta     { background: rgba(168,85,247,0.15); color: #7e22ce; border: 1.5px solid rgba(168,85,247,0.4); font-weight: 800; box-shadow: 0 2px 8px rgba(168,85,247,0.2); }
+.visa-eta      { background: rgba(59,130,246,0.15);  color: #1d4ed8; border: 1px solid rgba(59,130,246,0.35); }
+.visa-evisa    { background: rgba(14,165,233,0.15);  color: #0369a1; border: 1px solid rgba(14,165,233,0.35); }
+
+/* Quick country pills */
+.mtp-quick-countries {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.mtp-quick-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.mtp-quick-pill {
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.mtp-quick-pill:hover {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.08);
+  transform: translateY(-1px);
+}
+
+/* Alert notice box */
+.mtp-visa-alert-box {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(245, 158, 11, 0.08) 100%);
+  border: 1.5px solid rgba(239, 68, 68, 0.35);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 20px;
+}
+.mtp-visa-alert-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #b91c1c;
+  margin-bottom: 8px;
+  letter-spacing: 0.02em;
+}
+.mtp-alert-icon { font-size: 1.1rem; }
+.mtp-visa-alert-text {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  line-height: 1.55;
+  margin: 0 0 12px;
+  font-weight: 500;
+}
+.mtp-portal-action {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.mtp-official-portal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #163300;
+  color: #9FE870;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+  box-shadow: 0 3px 10px rgba(22, 51, 0, 0.25);
+}
+.mtp-official-portal-btn:hover {
+  background: #1f4700;
+  transform: translateY(-2px);
+  color: #9FE870;
+}
+
+.mtp-visa-exemption-pill {
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.84rem;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  line-height: 1.45;
+}
+.mtp-visa-exemption-pill .exemption-badge {
+  font-weight: 700;
+  color: #1d4ed8;
+  margin-right: 6px;
+}
+
+.mtp-visa-details { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.mtp-visa-row { display: flex; justify-content: space-between; padding: 10px 14px; background: var(--bg-secondary); border-radius: 8px; font-size: 0.88rem; }
+.mtp-visa-row span { color: var(--text-secondary); }
+.mtp-visa-docs { margin: 14px 0; }
+.mtp-visa-docs strong { display: block; margin-bottom: 8px; font-size: 0.88rem; }
+.mtp-visa-docs ul { margin: 0; padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.mtp-visa-docs li { background: var(--bg-secondary); border-radius: 8px; padding: 7px 12px; font-size: 0.85rem; color: var(--text-secondary); }
+
+.mtp-portal-action-link {
+  display: inline-block;
+  color: #163300;
+  background: #9FE870;
+  text-decoration: none;
+  font-size: 0.86rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+.mtp-portal-action-link:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.mtp-embassy-link {
+  display: inline-block;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.86rem;
+  font-weight: 600;
+  border: 1px solid var(--glass-border);
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+.mtp-embassy-link:hover { background: var(--bg-secondary); color: var(--text-primary); }
+
+/* ════ ACCOMMODATION ════ */
+.mtp-hotel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+.mtp-hotel-card {
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+.mtp-hotel-card:hover { border-color: #22c55e; transform: translateY(-2px); }
+.mtp-hotel-img { width: 100%; height: 160px; object-fit: cover; }
+.mtp-hotel-img-placeholder { width: 100%; height: 160px; background: linear-gradient(135deg, #1a5f3c22, #22c55e22); display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+.mtp-hotel-body { padding: 14px; }
+.mtp-hotel-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+.mtp-hotel-top h3 { margin: 0; font-size: 0.95rem; font-weight: 700; }
+.mtp-price-badge { font-size: 0.7rem; font-weight: 800; padding: 3px 10px; border-radius: 999px; color: #fff; white-space: nowrap; }
+.mtp-hotel-addr { margin: 0 0 8px; font-size: 0.82rem; color: var(--text-secondary); }
+.mtp-hotel-meta { display: flex; gap: 10px; flex-wrap: wrap; font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 10px; align-items: center; }
+.mtp-hotel-features { display: flex; flex-wrap: wrap; gap: 6px; }
+.mtp-feature-tag { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.2); color: #22c55e; font-size: 0.72rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .mtp-dest-row   { grid-template-columns: 1fr; }
+  .mtp-tabs       { gap: 6px; }
+  .mtp-tab        { padding: 8px 10px; font-size: 0.78rem; }
+  .mtp-tab-label  { display: none; }
+  .mtp-tab-icon   { font-size: 1.3rem; }
+  .mtp-weather-grid { grid-template-columns: repeat(2, 1fr); }
+  .mtp-food-grid  { grid-template-columns: 1fr; }
+  .mtp-hotel-grid { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,41 @@
+export const TRAVEL_STYLES = [
+  'adventure', 
+  'relaxation', 
+  'cultural', 
+  'foodie', 
+  'nature', 
+  'urban',
+  'historical', 
+  'nightlife', 
+  'backpacking', 
+  'luxury', 
+  'roadtrip', 
+  'photography', 
+  'spiritual', 
+  'family', 
+  'shopping', 
+  'wellness',
+  'romantic', 
+  'wildlife'
+];
+
+export const STYLE_ICONS = {
+  adventure: '🧗', 
+  relaxation: '🏖️', 
+  cultural: '🎭', 
+  foodie: '🍜',
+  nature: '🌲', 
+  urban: '🏙️', 
+  historical: '🏛️', 
+  nightlife: '🍸',
+  backpacking: '🎒', 
+  luxury: '💎', 
+  roadtrip: '🚗', 
+  photography: '📷',
+  spiritual: '🧘', 
+  family: '👨‍👩‍👧‍👦', 
+  shopping: '🛍️', 
+  wellness: '💆',
+  romantic: '❤️', 
+  wildlife: '🦁'
+};

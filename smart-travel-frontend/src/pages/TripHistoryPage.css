@@ -1,0 +1,324 @@
+/* ============================================================
+   HEADER
+   ============================================================ */
+.history-header {
+  margin-bottom: 28px;
+}
+.history-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+}
+.history-header p {
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+/* ============================================================
+   STATUS STATS BAR (Filter Tabs)
+   ============================================================ */
+.status-stats-bar {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.status-stat-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 110px;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-secondary);
+}
+
+.status-stat-btn:hover {
+  border-color: var(--accent-primary);
+  background: var(--bg-card-hover);
+  transform: translateY(-2px);
+}
+
+.status-stat-btn.active {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+.stat-emoji { font-size: 1.4rem; }
+.stat-count { font-size: 1.6rem; font-weight: 800; color: var(--text-primary); line-height: 1; }
+.stat-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ============================================================
+   HISTORY GRID
+   ============================================================ */
+.history-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 600px) {
+  .history-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   HISTORY CARD
+   ============================================================ */
+.history-card {
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 0;
+  overflow: hidden;
+  transition: var(--transition);
+  position: relative;
+}
+
+.history-card:hover {
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-2px);
+}
+
+/* Colored top stripe based on status */
+.history-status-stripe {
+  height: 4px;
+  width: 100%;
+  opacity: 0.85;
+}
+
+.history-card-top {
+  padding: 20px 20px 0 20px;
+}
+
+.history-title-group h2 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+/* Status Badge */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.history-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  margin-bottom: 14px;
+}
+
+.meta-item {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.04);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--glass-border);
+}
+
+.history-Overview {
+  padding: 0 20px 14px 20px;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+/* ============================================================
+   PROGRESS TRACKER
+   ============================================================ */
+.trip-progress-tracker {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--glass-border);
+  gap: 0;
+}
+
+.tracker-step-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+  min-width: 80px;
+}
+
+.tracker-step {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--glass-border);
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.tracker-step.tracker-active {
+  box-shadow: 0 0 18px rgba(99,102,241,0.5);
+  transform: scale(1.18);
+}
+
+.tracker-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* Connecting line BETWEEN step wraps — rendered as a flex child */
+.tracker-line {
+  flex: 1;
+  height: 2px;
+  background: var(--glass-border);
+  margin-top: 22px; /* vertically aligns with center of 44px circle */
+  min-width: 40px;
+  max-width: 80px;
+  transition: background 0.4s ease;
+  align-self: flex-start;
+}
+
+.tracker-line-done {
+  opacity: 0.7;
+}
+
+/* ============================================================
+   ACTION BUTTONS
+   ============================================================ */
+.history-actions {
+  display: flex;
+  gap: 10px;
+  padding: 16px 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn-history-view {
+  padding: 8px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-history-view:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.btn-status-advance {
+  padding: 8px 16px;
+  background: transparent;
+  border: 1.5px solid;
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-status-advance:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+}
+
+.btn-status-advance:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-status-revert {
+  padding: 7px 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-status-revert:hover {
+  border-color: var(--accent-warning);
+  color: var(--accent-warning);
+}
+
+.btn-history-delete {
+  margin-left: auto;
+  padding: 8px 14px;
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.25);
+  border-radius: var(--radius-md);
+  color: var(--accent-danger);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-history-delete:hover {
+  background: rgba(239,68,68,0.18);
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+.empty-history {
+  text-align: center;
+  padding: 80px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.empty-history h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.empty-history p {
+  color: var(--text-muted);
+  max-width: 400px;
+}

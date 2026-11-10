@@ -21,7 +21,6 @@ import AdminPage      from './pages/AdminPage';
 
 import StatsPage      from './pages/StatsPage';
 import MuslimTravelPage from './pages/MuslimTravelPage';
-import ChatWidget     from './components/ChatWidget';
 
 // Protected route wrapper
 function PrivateRoute({ children }) {
@@ -75,7 +74,6 @@ function AppRoutes() {
         <Route path="/admin" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      <ChatWidget />
     </>
   );
 }

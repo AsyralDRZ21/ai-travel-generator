@@ -1,24 +1,43 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, AreaChart, Area } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  AreaChart,
+  Area
+} from 'recharts';
 import './AdminPage.css';
 
 export default function AdminPage() {
   const { user, token } = useAuth();
   const navigate = useNavigate();
-  
+
   const [stats, setStats] = useState(null);
-  const [inbox, setInbox] = useState([]);
-  const [activeChatUser, setActiveChatUser] = useState(null);
-  const [adminMessages, setAdminMessages] = useState([]);
-  const [adminReplyText, setAdminReplyText] = useState('');
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
+
+  // Search filters
+  const [userSearch, setUserSearch] = useState('');
+  const [postSearch, setPostSearch] = useState('');
+
+  // Global broadcast announcement
+  const [broadcastText, setBroadcastText] = useState('');
+  const [broadcastActive, setBroadcastActive] = useState(true);
+  const [savingBroadcast, setSavingBroadcast] = useState(false);
+
+  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
   useEffect(() => {
-    // Extra guard redirect
+    // Extra security guard redirect
     if (user && user.role !== 'admin') {
       navigate('/dashboard');
       return;
@@ -26,116 +45,107 @@ export default function AdminPage() {
 
     if (token) {
       fetchAdminStats();
-      fetchInbox();
+      fetchBroadcast();
     }
   }, [user, token, navigate]);
 
-  const fetchInbox = async () => {
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/chat/admin/inbox`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setInbox(data);
-      }
-    } catch (err) {
-      console.error(err);
-    }
+  const showNotification = (msg) => {
+    setSuccessMsg(msg);
+    setTimeout(() => setSuccessMsg(''), 4000);
   };
 
-  const openAdminChat = async (targetUser) => {
-    setActiveChatUser(targetUser);
+  const fetchAdminStats = async (isManual = false) => {
+    if (isManual) setRefreshing(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}`}/chat/${targetUser._id}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setAdminMessages(data);
-        fetchInbox(); // Refresh unread count
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleAdminReply = async (e) => {
-    e.preventDefault();
-    if (!adminReplyText.trim() || !activeChatUser) return;
-    
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ text: adminReplyText, targetUserId: activeChatUser._id })
-      });
-      if (res.ok) {
-        setAdminReplyText('');
-        openAdminChat(activeChatUser); // Refresh chat history
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const fetchAdminStats = async () => {
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/admin/stats`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      const res = await fetch(`${API_BASE}/admin/stats`, {
+        headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
-      
-      if (!res.ok) {
-        throw new Error(data.message || 'Failed to fetch admin stats');
-      }
-      
+      if (!res.ok) throw new Error(data.message || 'Failed to fetch admin stats');
       setStats(data);
+      if (isManual) showNotification('Admin metrics refreshed successfully!');
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
+      if (isManual) setRefreshing(false);
+    }
+  };
+
+  const fetchBroadcast = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/admin/broadcast`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.broadcast) {
+          setBroadcastText(data.broadcast);
+          setBroadcastActive(true);
+        }
+      }
+    } catch (err) {
+      console.warn('Could not fetch active broadcast:', err.message);
+    }
+  };
+
+  const handleSaveBroadcast = async (e) => {
+    e.preventDefault();
+    if (!broadcastText.trim()) {
+      alert('Please enter a broadcast announcement message.');
+      return;
+    }
+    setSavingBroadcast(true);
+    try {
+      const res = await fetch(`${API_BASE}/admin/broadcast`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          message: broadcastText.trim(),
+          active: broadcastActive
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to save broadcast');
+      showNotification(
+        broadcastActive
+          ? '📢 Global broadcast published live to all users!'
+          : 'Global broadcast saved as inactive.'
+      );
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setSavingBroadcast(false);
     }
   };
 
   const handlePromoteUser = async (userId, name) => {
-    if (!window.confirm(`Are you sure you want to promote ${name} to Admin?`)) return;
+    if (!window.confirm(`Are you sure you want to promote ${name} to Administrator?`)) return;
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}`}/admin/users/${userId}/promote`, {
+      const res = await fetch(`${API_BASE}/admin/users/${userId}/promote`, {
         method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Failed to promote user');
-      
-      // Refresh stats to show new role
+      showNotification(`🎉 ${name} has been promoted to Admin!`);
       fetchAdminStats();
-      alert('User successfully promoted to Admin!');
     } catch (err) {
       alert(err.message);
     }
   };
 
   const handleDeleteUser = async (userId, name) => {
-    if (!window.confirm(`DANGER: Are you sure you want to PERMANENTLY delete ${name}? All their itineraries will be gone.`)) return;
+    if (!window.confirm(`⚠️ DANGER: Permanently delete user "${name}" and all their itineraries?`)) return;
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}`}/admin/users/${userId}`, {
+      const res = await fetch(`${API_BASE}/admin/users/${userId}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Failed to delete user');
-      
-      // Refresh stats
+      showNotification(`User "${name}" was permanently removed.`);
       fetchAdminStats();
     } catch (err) {
       alert(err.message);
@@ -143,264 +153,477 @@ export default function AdminPage() {
   };
 
   const handleDeletePost = async (postId) => {
-    if (!window.confirm(`DANGER: Are you sure you want to permanently WIPE this post?`)) return;
+    if (!window.confirm('⚠️ Are you sure you want to permanently WIPE this community post?')) return;
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/admin/posts/${postId}`, {
+      const res = await fetch(`${API_BASE}/admin/posts/${postId}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Failed to wipe post');
-      
+      showNotification('Community post wiped successfully.');
       fetchAdminStats();
     } catch (err) {
       alert(err.message);
     }
   };
 
-  if (!user || user.role !== 'admin') return null; // Avoid flashing UI before redirect
+  // Filtered users
+  const filteredUsers = useMemo(() => {
+    if (!stats?.recentUsers) return [];
+    if (!userSearch.trim()) return stats.recentUsers;
+    const q = userSearch.toLowerCase();
+    return stats.recentUsers.filter(
+      (u) =>
+        u.fullName?.toLowerCase().includes(q) ||
+        u.email?.toLowerCase().includes(q) ||
+        u.role?.toLowerCase().includes(q)
+    );
+  }, [stats?.recentUsers, userSearch]);
+
+  // Filtered posts
+  const filteredPosts = useMemo(() => {
+    if (!stats?.recentPosts) return [];
+    if (!postSearch.trim()) return stats.recentPosts;
+    const q = postSearch.toLowerCase();
+    return stats.recentPosts.filter(
+      (p) =>
+        p.content?.toLowerCase().includes(q) ||
+        p.user?.fullName?.toLowerCase().includes(q) ||
+        p.user?.email?.toLowerCase().includes(q)
+    );
+  }, [stats?.recentPosts, postSearch]);
+
+  // Chart data
+  const chartAreaData = useMemo(() => {
+    const total = stats?.totalItineraries || 0;
+    return [
+      { name: 'Week 1', plans: Math.max(0, total - 18) },
+      { name: 'Week 2', plans: Math.max(0, total - 11) },
+      { name: 'Week 3', plans: Math.max(0, total - 4) },
+      { name: 'This Week', plans: total }
+    ];
+  }, [stats?.totalItineraries]);
+
+  const chartBarData = useMemo(() => {
+    return [
+      { metric: 'Users', total: stats?.totalUsers || 0 },
+      { metric: 'Plans', total: stats?.totalItineraries || 0 },
+      { metric: 'Community', total: stats?.totalPosts || 0 }
+    ];
+  }, [stats]);
+
+  if (!user || user.role !== 'admin') return null;
 
   return (
-    <div className="admin-container">
+    <div className="admin-page-layout">
       <Navbar />
-      
-      <div className="admin-header">
-        <div>
-          <h1> Admin Dashboard</h1>
-          <p>Global analytics and platform management.</p>
-        </div>
-      </div>
 
-      {error && <div className="alert-error" style={{ padding: 12, borderRadius: 8, marginBottom: 24 }}>{error}</div>}
-
-      {loading ? (
-        <div className="loading-overlay">
-          <div className="spinner"></div>
-          <p>Loading global metrics...</p>
-        </div>
-      ) : stats ? (
-        <>
-
-          <div className="admin-stats-grid">
-            <div className="stat-card" style={{ '--card-gradient': 'var(--gradient-primary)' }}>
-              <div className="stat-value">{stats.totalUsers}</div>
-              <div className="stat-label">Total Users</div>
+      <main className="admin-main-content">
+        {/* Header Section */}
+        <section className="admin-hero-card">
+          <div className="admin-hero-left">
+            <div className="admin-hero-pill">
+              <span className="admin-pill-dot"></span>
+              <span>ADMIN CONSOLE</span>
             </div>
-            
-            <div className="stat-card" style={{ '--card-gradient': 'var(--gradient-success)' }}>
-              <div className="stat-value">{stats.totalItineraries}</div>
-              <div className="stat-label">Itineraries Generated</div>
-            </div>
-            
-            <div className="stat-card" style={{ '--card-gradient': 'var(--gradient-warm)' }}>
-              <div className="stat-value" style={{ fontSize: '3rem' }}>
-                {stats.totalPosts ? stats.totalPosts.toLocaleString() : 0}
-              </div>
-              <div className="stat-label">Total Community Posts</div>
-            </div>
-
-            <div className="stat-card" style={{ '--card-gradient': 'linear-gradient(135deg, #1e293b, #0f172a)', border: '1px solid rgba(255,255,255,0.1)' }}>
-              <div className="stat-value" style={{ fontSize: '2rem', color: '#94a3b8' }}>
-                ~${(stats.totalItineraries * 0.0015).toFixed(2)}
-              </div>
-              <div className="stat-label" style={{ color: '#64748b' }}>Est. Gemini API Cost</div>
-            </div>
+            <h1 className="admin-hero-title">System Overview & Management</h1>
+            <p className="admin-hero-subtitle">
+              Monitor real-time AI generation metrics, manage platform accounts, and maintain community safety.
+            </p>
           </div>
 
-          {/* Graphical Analytics Component */}
-          <div className="glass-card fade-in" style={{ padding: 24, margin: '2rem 24px', display: 'flex', flexWrap: 'wrap', gap: 32 }}>
-            <div style={{ flex: '1 1 400px' }}>
-               <h3 style={{ marginBottom: 16, fontSize: '1.1rem' }}> API Engine Utilization (Estimated Itineraries)</h3>
-               <div style={{ height: 250 }}>
-                 <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={[
-                      { name: 'Week 1', count: Math.max(0, stats.totalItineraries - 20) },
-                      { name: 'Week 2', count: Math.max(0, stats.totalItineraries - 10) },
-                      { name: 'Week 3', count: Math.max(0, stats.totalItineraries - 5) },
-                      { name: 'This Week', count: stats.totalItineraries }
-                    ]}>
+          <div className="admin-hero-actions">
+            <button
+              className="admin-btn-refresh"
+              onClick={() => fetchAdminStats(true)}
+              disabled={refreshing}
+              title="Refresh platform statistics"
+            >
+              <span className={`refresh-icon ${refreshing ? 'spinning' : ''}`}>🔄</span>
+              <span>{refreshing ? 'Refreshing...' : 'Refresh Metrics'}</span>
+            </button>
+          </div>
+        </section>
+
+        {/* Floating alerts */}
+        {error && (
+          <div className="admin-toast-banner error-banner">
+            <span>⚠️ {error}</span>
+            <button onClick={() => setError('')} className="btn-close-toast">×</button>
+          </div>
+        )}
+
+        {successMsg && (
+          <div className="admin-toast-banner success-banner">
+            <span>✅ {successMsg}</span>
+            <button onClick={() => setSuccessMsg('')} className="btn-close-toast">×</button>
+          </div>
+        )}
+
+        {loading ? (
+          <div className="admin-loading-state">
+            <div className="admin-spinner"></div>
+            <p>Loading enterprise platform metrics...</p>
+          </div>
+        ) : stats ? (
+          <>
+            {/* KPI Cards Grid */}
+            <section className="admin-kpi-grid">
+              {/* Card 1: Users */}
+              <div className="admin-kpi-card">
+                <div className="kpi-card-header">
+                  <span className="kpi-card-icon-badge">👥</span>
+                  <span className="kpi-tag-trend">Total Registered</span>
+                </div>
+                <div className="kpi-value-row">
+                  <span className="kpi-number">{stats.totalUsers || 0}</span>
+                </div>
+                <div className="kpi-meta-text">Active traveler accounts</div>
+              </div>
+
+              {/* Card 2: Itineraries */}
+              <div className="admin-kpi-card highlight-card">
+                <div className="kpi-card-header">
+                  <span className="kpi-card-icon-badge">🗺️</span>
+                  <span className="kpi-tag-trend success-trend">AI Generated</span>
+                </div>
+                <div className="kpi-value-row">
+                  <span className="kpi-number">{stats.totalItineraries || 0}</span>
+                </div>
+                <div className="kpi-meta-text">Full travel plans constructed</div>
+              </div>
+
+              {/* Card 3: Community Posts */}
+              <div className="admin-kpi-card">
+                <div className="kpi-card-header">
+                  <span className="kpi-card-icon-badge">💬</span>
+                  <span className="kpi-tag-trend">Community Hub</span>
+                </div>
+                <div className="kpi-value-row">
+                  <span className="kpi-number">{stats.totalPosts || 0}</span>
+                </div>
+                <div className="kpi-meta-text">Travel discussions shared</div>
+              </div>
+
+              {/* Card 4: AI Engine Health */}
+              <div className="admin-kpi-card engine-card">
+                <div className="kpi-card-header">
+                  <span className="kpi-card-icon-badge">⚡</span>
+                  <span className="kpi-tag-trend engine-status">Gemini 2.5 Flash</span>
+                </div>
+                <div className="kpi-value-row">
+                  <span className="kpi-number cost-number">
+                    ~${((stats.totalItineraries || 0) * 0.0015).toFixed(2)}
+                  </span>
+                </div>
+                <div className="kpi-meta-text">Est. AI token compute cost</div>
+              </div>
+            </section>
+
+            {/* Global Broadcast Announcement Section */}
+            <section className="admin-section-card broadcast-card">
+              <div className="section-card-header">
+                <div>
+                  <h2 className="section-card-title">📢 Global Announcement Broadcast</h2>
+                  <p className="section-card-desc">
+                    Publish a live notice or maintenance alert displayed to all visitors and active travelers.
+                  </p>
+                </div>
+                <div className="broadcast-live-badge">
+                  <span className={`live-indicator ${broadcastActive ? 'active' : 'inactive'}`}></span>
+                  <span>{broadcastActive ? 'Broadcast Live' : 'Broadcast Paused'}</span>
+                </div>
+              </div>
+
+              <form onSubmit={handleSaveBroadcast} className="broadcast-form">
+                <div className="broadcast-input-group">
+                  <input
+                    type="text"
+                    className="broadcast-input"
+                    placeholder="E.g., 📢 Welcome to Smart Travel! Gemini AI 2.5 Flash engine is now active for instant itineraries."
+                    value={broadcastText}
+                    onChange={(e) => setBroadcastText(e.target.value)}
+                  />
+                  <div className="broadcast-controls">
+                    <label className="broadcast-toggle-label">
+                      <input
+                        type="checkbox"
+                        checked={broadcastActive}
+                        onChange={(e) => setBroadcastActive(e.target.checked)}
+                      />
+                      <span>Active on Platform</span>
+                    </label>
+                    <button
+                      type="submit"
+                      className="btn-broadcast-submit"
+                      disabled={savingBroadcast}
+                    >
+                      {savingBroadcast ? 'Saving...' : 'Publish Announcement'}
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </section>
+
+            {/* Recharts Analytics Grid */}
+            <section className="admin-charts-grid">
+              <div className="admin-chart-box">
+                <div className="chart-box-header">
+                  <h3 className="chart-box-title">📈 AI Engine Itinerary Throughput</h3>
+                  <span className="chart-box-badge">Weekly Output</span>
+                </div>
+                <div className="chart-container-inner">
+                  <ResponsiveContainer width="100%" height={260}>
+                    <AreaChart data={chartAreaData} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
                       <defs>
-                        <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
-                          <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                        <linearGradient id="wiseGreenGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#9FE870" stopOpacity={0.7} />
+                          <stop offset="95%" stopColor="#9FE870" stopOpacity={0.02} />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                      <XAxis dataKey="name" stroke="#64748b" />
-                      <YAxis stroke="#64748b" />
-                      <Tooltip contentStyle={{ background: '#0f172a', border: '1px solid #1e293b' }} />
-                      <Area type="monotone" dataKey="count" stroke="#10b981" fillOpacity={1} fill="url(#colorCount)" />
-                    </AreaChart>
-                 </ResponsiveContainer>
-               </div>
-            </div>
-
-            <div style={{ flex: '1 1 400px' }}>
-               <h3 style={{ marginBottom: 16, fontSize: '1.1rem' }}> Platform Engagement</h3>
-               <div style={{ height: 250 }}>
-                 <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={[
-                      { name: 'Users', amount: stats.totalUsers },
-                      { name: 'Discussions', amount: stats.totalPosts },
-                      { name: 'Plans', amount: stats.totalItineraries }
-                    ]}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                      <XAxis dataKey="name" stroke="#64748b" />
-                      <YAxis stroke="#64748b" />
-                      <Tooltip contentStyle={{ background: '#0f172a', border: '1px solid #1e293b' }} />
-                      <Bar dataKey="amount" fill="#6366f1" radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                 </ResponsiveContainer>
-               </div>
-            </div>
-          </div>
-
-          <div className="recent-users-section fade-in">
-            <h2> Recent Signups</h2>
-            <div style={{ overflowX: 'auto' }}>
-              <table className="user-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Joined</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stats.recentUsers.map(u => (
-                    <tr key={u._id}>
-                      <td><strong style={{ color: 'var(--text-primary)' }}>{u.fullName}</strong></td>
-                      <td>{u.email}</td>
-                      <td>
-                        <span className={`role-badge role-${u.role}`}>
-                          {u.role}
-                        </span>
-                      </td>
-                      <td>{new Date(u.createdAt).toLocaleDateString()}</td>
-                      <td>
-                        {/* {u.role === 'user' && (
-                          <button 
-                            className="btn-admin-action btn-admin-promote"
-                            onClick={() => handlePromoteUser(u._id, u.fullName)}
-                          >
-                            👑 Promote
-                          </button>
-                        )} */}
-                        <button 
-                          className="btn-admin-action btn-admin-delete"
-                          onClick={() => handleDeleteUser(u._id, u.fullName)}
-                          disabled={user.id === u._id}
-                        >
-                          🗑️ Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div className="recent-users-section fade-in" style={{ marginTop: '2rem' }}>
-            <h2> Community Moderation</h2>
-            <div style={{ overflowX: 'auto' }}>
-              <table className="user-table">
-                <thead>
-                  <tr>
-                    <th>Author</th>
-                    <th>Post Content</th>
-                    <th>Date Posted</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stats.recentPosts && stats.recentPosts.length > 0 ? stats.recentPosts.map(post => (
-                    <tr key={post._id}>
-                      <td><strong style={{ color: 'var(--text-primary)' }}>{post.user?.fullName || 'Deleted User'}</strong> <br/> <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{post.user?.email || ''}</span></td>
-                      <td style={{ maxWidth: 350, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{post.content}</td>
-                      <td>{new Date(post.createdAt).toLocaleDateString()}</td>
-                      <td>
-                        <button 
-                          className="btn-admin-action btn-admin-delete"
-                          onClick={() => handleDeletePost(post._id)}
-                        >
-                          🗑️ Wipe Post
-                        </button>
-                      </td>
-                    </tr>
-                  )) : (
-                    <tr><td colSpan="4" style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '20px' }}>No community posts found.</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div className="recent-users-section fade-in" style={{ marginTop: '2rem' }}>
-            <h2> Support Inbox</h2>
-            <div style={{ display: 'flex', gap: '24px', minHeight: '400px' }}>
-              
-              <div style={{ flex: 1, borderRight: '1px solid var(--glass-border)', paddingRight: '16px' }}>
-                {inbox.length === 0 ? <p style={{ color: 'var(--text-muted)' }}>No messages from users.</p> : null}
-                {inbox.map(thread => (
-                  <div 
-                    key={thread._id._id} 
-                    onClick={() => openAdminChat(thread._id)}
-                    style={{ 
-                      padding: 16, borderBottom: '1px solid rgba(255,255,255,0.05)', cursor: 'pointer',
-                      background: activeChatUser?._id === thread._id._id ? 'rgba(255,255,255,0.05)' : 'transparent',
-                      borderRadius: 8
-                    }}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <strong>{thread._id.fullName}</strong>
-                      {thread.unreadCount > 0 && <span style={{ background: 'var(--primary-color)', color: 'white', padding: '2px 8px', borderRadius: 12, fontSize: '0.8rem' }}>{thread.unreadCount} New</span>}
-                    </div>
-                    <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginTop: 8, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {thread.latestMessage}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div style={{ flex: 2, display: 'flex', flexDirection: 'column' }}>
-                {activeChatUser ? (
-                  <>
-                    <h3 style={{ borderBottom: '1px solid var(--glass-border)', paddingBottom: 12, marginBottom: 12 }}>
-                      Chat with {activeChatUser.fullName}
-                    </h3>
-                    <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 16, maxHeight: '300px', paddingRight: 8 }}>
-                      {adminMessages.map(msg => (
-                        <div key={msg._id} className={`chat-message ${msg.senderRole === 'admin' ? 'msg-user' : 'msg-admin'}`}>
-                          {msg.text}
-                          <span className="msg-time">{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <form style={{ display: 'flex', gap: 8 }} onSubmit={handleAdminReply}>
-                      <input 
-                        type="text" 
-                        style={{ flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', borderRadius: 20, padding: '10px 16px', color: 'white', outline: 'none' }}
-                        placeholder="Type reply..."
-                        value={adminReplyText}
-                        onChange={e => setAdminReplyText(e.target.value)}
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e6ece0" vertical={false} />
+                      <XAxis dataKey="name" stroke="#718096" fontSize={12} tickLine={false} />
+                      <YAxis stroke="#718096" fontSize={12} tickLine={false} allowDecimals={false} />
+                      <Tooltip
+                        contentStyle={{
+                          background: '#163300',
+                          border: '1px solid #9FE870',
+                          borderRadius: 10,
+                          color: '#ffffff',
+                          fontWeight: 600
+                        }}
+                        itemStyle={{ color: '#9FE870' }}
                       />
-                      <button type="submit" style={{ background: 'var(--primary-color)', border: 'none', color: 'white', borderRadius: 20, padding: '0 20px', cursor: 'pointer' }}>Send</button>
-                    </form>
-                  </>
-                ) : (
-                  <div style={{ margin: 'auto', color: 'var(--text-muted)' }}>Select a user to chat</div>
-                )}
+                      <Area
+                        type="monotone"
+                        dataKey="plans"
+                        name="Generated Plans"
+                        stroke="#163300"
+                        strokeWidth={2.5}
+                        fillOpacity={1}
+                        fill="url(#wiseGreenGradient)"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
 
-            </div>
-          </div>
-        </>
-      ) : null}
+              <div className="admin-chart-box">
+                <div className="chart-box-header">
+                  <h3 className="chart-box-title">📊 Platform Distribution</h3>
+                  <span className="chart-box-badge">Platform Breakdown</span>
+                </div>
+                <div className="chart-container-inner">
+                  <ResponsiveContainer width="100%" height={260}>
+                    <BarChart data={chartBarData} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e6ece0" vertical={false} />
+                      <XAxis dataKey="metric" stroke="#718096" fontSize={12} tickLine={false} />
+                      <YAxis stroke="#718096" fontSize={12} tickLine={false} allowDecimals={false} />
+                      <Tooltip
+                        contentStyle={{
+                          background: '#163300',
+                          border: '1px solid #9FE870',
+                          borderRadius: 10,
+                          color: '#ffffff',
+                          fontWeight: 600
+                        }}
+                        itemStyle={{ color: '#9FE870' }}
+                      />
+                      <Bar dataKey="total" name="Total Records" fill="#163300" radius={[6, 6, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </section>
+
+            {/* User Directory Management Section */}
+            <section className="admin-section-card">
+              <div className="section-card-header wrap-header">
+                <div>
+                  <h2 className="section-card-title">👥 User Directory & Accounts</h2>
+                  <p className="section-card-desc">
+                    Manage registered traveler profiles and assign administrative privileges.
+                  </p>
+                </div>
+                <div className="section-search-box">
+                  <span className="search-box-icon">🔍</span>
+                  <input
+                    type="text"
+                    placeholder="Search by name, email, role..."
+                    value={userSearch}
+                    onChange={(e) => setUserSearch(e.target.value)}
+                  />
+                  {userSearch && (
+                    <button className="btn-clear-search" onClick={() => setUserSearch('')}>×</button>
+                  )}
+                </div>
+              </div>
+
+              <div className="table-responsive-wrapper">
+                <table className="admin-data-table">
+                  <thead>
+                    <tr>
+                      <th>Traveler</th>
+                      <th>Email Address</th>
+                      <th>Account Role</th>
+                      <th>Date Registered</th>
+                      <th style={{ textAlign: 'right' }}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredUsers.length > 0 ? (
+                      filteredUsers.map((u) => {
+                        const isSelf = user.id === u._id || user._id === u._id;
+                        return (
+                          <tr key={u._id}>
+                            <td>
+                              <div className="user-cell-meta">
+                                <div className="user-avatar-badge">
+                                  {u.fullName?.charAt(0).toUpperCase() || 'U'}
+                                </div>
+                                <div className="user-name-box">
+                                  <strong>{u.fullName}</strong>
+                                  {isSelf && <span className="self-tag">(You)</span>}
+                                </div>
+                              </div>
+                            </td>
+                            <td className="table-cell-email">{u.email}</td>
+                            <td>
+                              <span className={`pill-badge badge-${u.role}`}>
+                                {u.role === 'admin' ? '🛡️ ADMIN' : '👤 USER'}
+                              </span>
+                            </td>
+                            <td className="table-cell-date">
+                              {new Date(u.createdAt).toLocaleDateString('en-GB', {
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric'
+                              })}
+                            </td>
+                            <td style={{ textAlign: 'right' }}>
+                              <div className="action-buttons-group">
+                                {u.role === 'user' && (
+                                  <button
+                                    className="btn-action-pill btn-promote-pill"
+                                    onClick={() => handlePromoteUser(u._id, u.fullName)}
+                                    title="Grant admin privileges"
+                                  >
+                                    ⭐ Promote
+                                  </button>
+                                )}
+                                <button
+                                  className="btn-action-pill btn-delete-pill"
+                                  onClick={() => handleDeleteUser(u._id, u.fullName)}
+                                  disabled={isSelf}
+                                  title={isSelf ? 'Cannot delete your own account' : 'Delete user permanently'}
+                                >
+                                  🗑️ Delete
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td colSpan="5" className="table-empty-row">
+                          No users found matching "{userSearch}".
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            {/* Community Content Moderation Section */}
+            <section className="admin-section-card">
+              <div className="section-card-header wrap-header">
+                <div>
+                  <h2 className="section-card-title">🛡️ Community Content Moderation</h2>
+                  <p className="section-card-desc">
+                    Review live community feed discussions and purge inappropriate or spam content.
+                  </p>
+                </div>
+                <div className="section-search-box">
+                  <span className="search-box-icon">🔍</span>
+                  <input
+                    type="text"
+                    placeholder="Search posts or authors..."
+                    value={postSearch}
+                    onChange={(e) => setPostSearch(e.target.value)}
+                  />
+                  {postSearch && (
+                    <button className="btn-clear-search" onClick={() => setPostSearch('')}>×</button>
+                  )}
+                </div>
+              </div>
+
+              <div className="table-responsive-wrapper">
+                <table className="admin-data-table">
+                  <thead>
+                    <tr>
+                      <th>Author</th>
+                      <th>Discussion Content</th>
+                      <th>Date Posted</th>
+                      <th style={{ textAlign: 'right' }}>Moderation</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredPosts.length > 0 ? (
+                      filteredPosts.map((post) => (
+                        <tr key={post._id}>
+                          <td>
+                            <div className="user-cell-meta">
+                              <div className="user-avatar-badge post-avatar">
+                                {post.user?.fullName?.charAt(0).toUpperCase() || 'P'}
+                              </div>
+                              <div className="user-name-box">
+                                <strong>{post.user?.fullName || 'Traveler'}</strong>
+                                <span className="author-email">{post.user?.email || 'N/A'}</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="table-cell-content">
+                            <p className="post-content-preview" title={post.content}>
+                              {post.content}
+                            </p>
+                          </td>
+                          <td className="table-cell-date">
+                            {new Date(post.createdAt).toLocaleDateString('en-GB', {
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric'
+                            })}
+                          </td>
+                          <td style={{ textAlign: 'right' }}>
+                            <button
+                              className="btn-action-pill btn-wipe-pill"
+                              onClick={() => handleDeletePost(post._id)}
+                              title="Permanently remove this community post"
+                            >
+                              🛡️ Wipe Post
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="4" className="table-empty-row">
+                          {stats.recentPosts && stats.recentPosts.length > 0
+                            ? `No discussions match "${postSearch}".`
+                            : 'No community discussions currently posted.'}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </>
+        ) : null}
+      </main>
     </div>
   );
 }

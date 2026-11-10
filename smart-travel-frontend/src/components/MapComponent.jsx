@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-// Fix leafet default icon issue
+// Fix Leaflet default icon issue
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 let DefaultIcon = L.icon({
@@ -15,11 +15,11 @@ let DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
-// Custom numbered icon generator
+// Custom numbered icon generator with Wise Green styling
 const createNumberedIcon = (number) => {
   return L.divIcon({
     className: 'custom-div-icon',
-    html: `<div style="background-color: var(--accent-primary); color: white; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-weight: bold; border: 2px solid white;">${number}</div>`,
+    html: `<div style="background-color: #163300; color: #9FE870; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 4px 10px rgba(22,51,0,0.4); font-weight: 800; font-size: 13px; border: 2.5px solid #ffffff;">${number}</div>`,
     iconSize: [30, 30],
     iconAnchor: [15, 15]
   });
@@ -50,12 +50,17 @@ export default function MapComponent({ markers = [] }) {
       center={initialCenter} 
       zoom={11} 
       scrollWheelZoom={true} 
-      style={{ height: '100%', width: '100%', background: '#0a0e1a' }}
+      style={{ height: '100%', width: '100%', background: '#eef2ea', borderRadius: '16px' }}
     >
+      {/* 
+        Free, reliable, high-performance travel map tile layer from CARTO Voyager / OpenStreetMap.
+        Does not require any API keys and never throws 401 authentication errors on deployed sites.
+      */}
       <TileLayer
-        attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        url={`https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png${import.meta.env.VITE_STADIA_KEY ? `?api_key=${import.meta.env.VITE_STADIA_KEY}` : ''}`}
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         maxZoom={20}
+        subdomains="abcd"
       />
       
       <MapBoundsFitter markers={validMarkers} />
@@ -67,9 +72,9 @@ export default function MapComponent({ markers = [] }) {
           icon={createNumberedIcon(idx + 1)}
         >
           <Popup>
-            <div style={{ color: '#333' }}>
-              <strong style={{ fontSize: '1.1rem' }}>{idx + 1}. {marker.title}</strong>
-              {marker.description && <p style={{ margin: '5px 0 0', fontSize: '0.9rem' }}>{marker.description}</p>}
+            <div style={{ color: '#163300', padding: '4px' }}>
+              <strong style={{ fontSize: '1rem', color: '#163300' }}>{idx + 1}. {marker.title}</strong>
+              {marker.description && <p style={{ margin: '6px 0 0', fontSize: '0.85rem', color: '#556b4a', lineHeight: 1.4 }}>{marker.description}</p>}
             </div>
           </Popup>
         </Marker>

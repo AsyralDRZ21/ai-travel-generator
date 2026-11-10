@@ -4,7 +4,7 @@ echo Pushing latest code to GitHub (ai-travel-generator)
 echo ==============================================
 git config --global --add safe.directory "C:/Users/60113/.gemini/antigravity/scratch/ai-travel-generator"
 git add .
-git commit -m "Upgrade Admin Dashboard to Wise Green theme and remove chat widget"
+git commit -m "Update Smart Travel: Admin Wise Green theme and CARTO Voyager Map fix" 2>nul
 git push origin main
 echo ==============================================
 echo DONE! Selesai push ke GitHub!

@@ -2,6 +2,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 
 // @route   POST /api/auth/register
 // @desc    Register a new user
@@ -265,7 +266,7 @@ exports.getUserStats = async (req, res) => {
 };
 
 // @route   POST /api/auth/forgot-password
-// @desc    Generate password reset token and "send" email (log to console)
+// @desc    Generate password reset token and send email via Gmail
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -277,26 +278,75 @@ exports.forgotPassword = async (req, res) => {
     // Generate random token
     const resetToken = crypto.randomBytes(20).toString('hex');
     
-    // Hash it and set to user document with 10 mins expiry
+    // Hash it and set to user document with 30 mins expiry
     user.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-    user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
+    user.resetPasswordExpire = Date.now() + 30 * 60 * 1000; // 30 minutes
     await user.save();
 
-    // Create reset URL
-    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+    // Create reset URL — use FRONTEND_URL env var (Vercel URL) or fallback
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
 
-    // Simulate sending email by logging to console
-    console.log('\n\n======================================================');
-    console.log('📬 PASSWORD RESET EMAIL SIMULATION');
-    console.log(`To: ${user.email}`);
-    console.log('Subject: Password Reset Request');
-    console.log(`Click this link to reset your password: \n${resetUrl}`);
-    console.log('======================================================\n\n');
+    // Setup Nodemailer transporter with Gmail
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD,
+      },
+    });
 
-    res.status(200).json({ message: 'Password reset link sent to email (check console).' });
+    // Email content with nice HTML template
+    const mailOptions = {
+      from: `"Smart Travel" <${process.env.GMAIL_USER}>`,
+      to: user.email,
+      subject: '🔐 Password Reset Request — Smart Travel',
+      html: `
+        <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f8faf5; border-radius: 16px; overflow: hidden;">
+          <div style="background: linear-gradient(135deg, #163300, #1a4d00); padding: 32px; text-align: center;">
+            <h1 style="color: #9FE870; margin: 0; font-size: 28px;">🌍 Smart Travel</h1>
+            <p style="color: rgba(255,255,255,0.8); margin: 8px 0 0; font-size: 14px;">Your AI-Powered Travel Companion</p>
+          </div>
+          <div style="padding: 32px;">
+            <h2 style="color: #163300; margin: 0 0 16px;">Hi ${user.fullName} 👋</h2>
+            <p style="color: #444; line-height: 1.6; font-size: 15px;">
+              We received a request to reset your password. Click the button below to create a new password:
+            </p>
+            <div style="text-align: center; margin: 32px 0;">
+              <a href="${resetUrl}" 
+                 style="background: #9FE870; color: #163300; padding: 14px 40px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 16px; display: inline-block;">
+                Reset My Password
+              </a>
+            </div>
+            <p style="color: #888; font-size: 13px; line-height: 1.5;">
+              ⏰ This link will expire in <strong>30 minutes</strong>.<br>
+              If you didn't request this, please ignore this email. Your password will remain unchanged.
+            </p>
+            <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 24px 0;">
+            <p style="color: #aaa; font-size: 12px; text-align: center;">
+              © ${new Date().getFullYear()} Smart Travel — AI-Powered Travel Planning
+            </p>
+          </div>
+        </div>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`✅ Password reset email sent to: ${user.email}`);
+
+    res.status(200).json({ message: 'Password reset link has been sent to your email! Please check your inbox.' });
   } catch (error) {
     console.error('Forgot password error:', error);
-    res.status(500).json({ message: 'Error sending reset email' });
+    // Clear token if email fails
+    try {
+      const user = await User.findOne({ email: req.body.email });
+      if (user) {
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
+        await user.save();
+      }
+    } catch {}
+    res.status(500).json({ message: 'Error sending reset email. Please try again later.' });
   }
 };
 

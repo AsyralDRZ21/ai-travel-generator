@@ -41,11 +41,7 @@ export default function ForgotPasswordPage() {
 
       <div className="auth-container fade-in">
         <div className="auth-card glass-card">
-          <div className="auth-logo">
-            <div className="brand-icon" style={{ width: 48, height: 48, fontSize: '1.4rem' }}></div>
-            <span className="auth-brand"></span>
-          </div>
-          <img src="/logo.png" alt="SmartTravel" style={{ height: 50, width: 10, objectFit: 'contain', margin: '0 auto 24px', display: 'block' }} />
+          <img src="/logo.png" alt="SmartTravel" style={{ height: 50, maxWidth: 220, objectFit: 'contain', margin: '0 auto 20px', display: 'block' }} />
           <h1 className="auth-title">Reset Password</h1>
           <p className="auth-subtitle">Enter your email and we'll send you a link to reset your password.</p>
 

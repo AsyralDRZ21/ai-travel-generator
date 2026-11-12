@@ -1,4 +1,8 @@
 {
+  "buildCommand": "cd smart-travel-frontend && npm install && npm run build",
+  "outputDirectory": "smart-travel-frontend/dist",
+  "installCommand": "echo skip",
+  "framework": "vite",
   "rewrites": [
     { "source": "/(.*)", "destination": "/" }
   ]

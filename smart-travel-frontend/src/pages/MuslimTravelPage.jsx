@@ -43,8 +43,9 @@ export default function MuslimTravelPage() {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
 
   // Visa
-  const [visaInfo, setVisaInfo]     = useState(null);
-  const [visaDest, setVisaDest]     = useState('');
+  const [visaInfo, setVisaInfo]         = useState(null);
+  const [visaDest, setVisaDest]         = useState('');
+  const [visaPassport, setVisaPassport] = useState('Malaysia');
 
   // Accommodation
   const [hotels, setHotels]         = useState([]);
@@ -138,10 +139,11 @@ export default function MuslimTravelPage() {
   });
 
   // ── Fetch Visa ──
-  const fetchVisa = (customDest) => withLoad(async () => {
+  const fetchVisa = (customDest, customPassport) => withLoad(async () => {
     const dest = (typeof customDest === 'string' ? customDest : visaDest) || country;
+    const pass = (typeof customPassport === 'string' ? customPassport : visaPassport) || 'Malaysia';
     if (!dest) throw new Error('Please enter destination country');
-    const { data } = await getVisaInfo(dest);
+    const { data } = await getVisaInfo(dest, pass);
     setVisaInfo(data);
   });
 
@@ -399,29 +401,77 @@ export default function MuslimTravelPage() {
         {activeTab === 'visa' && (
           <div className="mtp-section">
             <div className="mtp-section-header">
-              <h2>🛂 Malaysian Passport Visa & Entry Requirements</h2>
-              <p>Official visa rules, electronic authorizations (K-ETA, ETA, SGAC), and consular advisories for Malaysian passport holders.</p>
+              <h2>🛂 International Passport & Visa Requirements</h2>
+              <p>Check official visa rules, electronic authorizations (K-ETA, ETA, SGAC, ESTA), and entry requirements for any passport nationality.</p>
             </div>
             
-            <div className="mtp-controls">
-              <div className="mtp-input-group" style={{ flex: 1 }}>
+            <div className="mtp-controls" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '14px', alignItems: 'end' }}>
+              <div className="mtp-input-group">
+                <label>🛂 Your Passport / Nationality</label>
+                <input
+                  className="mtp-input"
+                  placeholder="e.g. Malaysia, Indonesia, Singapore, United Kingdom"
+                  value={visaPassport}
+                  onChange={e => setVisaPassport(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter') fetchVisa(); }}
+                />
+              </div>
+
+              <div className="mtp-input-group">
                 <label>🔍 Destination Country or City</label>
                 <input
                   className="mtp-input"
-                  placeholder="e.g. South Korea, Japan, United Kingdom, Australia, Saudi Arabia"
+                  placeholder="e.g. South Korea, Japan, United Kingdom, Australia"
                   value={visaDest || country}
                   onChange={e => setVisaDest(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter') fetchVisa(); }}
                 />
               </div>
-              <button className="mtp-btn" onClick={() => fetchVisa()} disabled={loading}>
-                {loading ? '⏳ Checking Requirements...' : '🔍 Check Visa'}
-              </button>
+
+              <div>
+                <button 
+                  className="mtp-btn" 
+                  onClick={() => fetchVisa()} 
+                  disabled={loading}
+                  style={{ width: '100%', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                  {loading ? '⏳ Checking...' : '🔍 Check Visa Requirements'}
+                </button>
+              </div>
+            </div>
+
+            {/* Quick Passport Pills */}
+            <div className="mtp-quick-countries" style={{ marginTop: '12px', marginBottom: '8px' }}>
+              <span className="mtp-quick-label">🛂 Select Passport:</span>
+              {[
+                { label: '🇲🇾 Malaysia', val: 'Malaysia' },
+                { label: '🇮🇩 Indonesia', val: 'Indonesia' },
+                { label: '🇸🇬 Singapore', val: 'Singapore' },
+                { label: '🇧🇳 Brunei', val: 'Brunei' },
+                { label: '🇬🇧 United Kingdom', val: 'United Kingdom' },
+                { label: '🇦🇺 Australia', val: 'Australia' },
+                { label: '🇺🇸 United States', val: 'United States' }
+              ].map(item => (
+                <button
+                  key={item.val}
+                  type="button"
+                  className={`mtp-quick-pill ${visaPassport.toLowerCase() === item.val.toLowerCase() ? 'active' : ''}`}
+                  style={visaPassport.toLowerCase() === item.val.toLowerCase() ? { background: '#9FE870', color: '#163300', fontWeight: 'bold' } : {}}
+                  onClick={() => {
+                    setVisaPassport(item.val);
+                    if (visaDest || country) {
+                      fetchVisa(visaDest || country, item.val);
+                    }
+                  }}
+                >
+                  {item.label}
+                </button>
+              ))}
             </div>
 
             {/* Quick Country Pills */}
             <div className="mtp-quick-countries">
-              <span className="mtp-quick-label">⚡ Popular:</span>
+              <span className="mtp-quick-label">⚡ Popular Destinations:</span>
               {[
                 { label: '🇰🇷 South Korea (K-ETA)', val: 'South Korea' },
                 { label: '🇯🇵 Japan', val: 'Japan' },
@@ -441,7 +491,7 @@ export default function MuslimTravelPage() {
                   className="mtp-quick-pill"
                   onClick={() => {
                     setVisaDest(item.val);
-                    fetchVisa(item.val);
+                    fetchVisa(item.val, visaPassport);
                   }}
                 >
                   {item.label}
@@ -453,7 +503,7 @@ export default function MuslimTravelPage() {
               <div className="mtp-visa-card">
                 <div className="mtp-visa-header">
                   <h3>
-                    🇲🇾 Malaysia → {visaInfo.flag || '✈️'} {visaInfo.destination?.toUpperCase()}
+                    {visaInfo.passportFlag || '🛂'} {visaInfo.passport || visaPassport} → {visaInfo.flag || '✈️'} {visaInfo.destination?.toUpperCase()}
                   </h3>
                   <span className={`mtp-visa-badge ${
                     visaInfo.badgeType === 'k-eta' ? 'visa-keta' :

@@ -40,7 +40,7 @@ export const getPrayerTimes       = (city, country, date) => API.get(`/muslim/pr
 export const getMosques           = (lat, lng, radius, city, country) => API.get(`/muslim/mosques?lat=${lat || ''}&lng=${lng || ''}&radius=${radius || 5000}${city ? `&city=${encodeURIComponent(city)}` : ''}${country ? `&country=${encodeURIComponent(country)}` : ''}`);
 export const getHalalFood         = (lat, lng, radius, city, country) => API.get(`/muslim/halal-food?lat=${lat || ''}&lng=${lng || ''}&radius=${radius || 5000}${city ? `&city=${encodeURIComponent(city)}` : ''}${country ? `&country=${encodeURIComponent(country)}` : ''}`);
 export const getHistoricalWeather = (lat, lng, month)                 => API.get(`/muslim/weather-history?lat=${lat}&lng=${lng}&month=${month}`);
-export const getVisaInfo          = (destination)                     => API.get(`/muslim/visa?destination=${encodeURIComponent(destination)}`);
+export const getVisaInfo          = (destination, passport = 'Malaysia') => API.get(`/muslim/visa?destination=${encodeURIComponent(destination)}&passport=${encodeURIComponent(passport)}`);
 export const getMuslimAccomm      = (lat, lng, radius, city, country) => API.get(`/muslim/accommodation?lat=${lat || ''}&lng=${lng || ''}&radius=${radius || 5000}${city ? `&city=${encodeURIComponent(city)}` : ''}${country ? `&country=${encodeURIComponent(country)}` : ''}`);
 
 export default API;

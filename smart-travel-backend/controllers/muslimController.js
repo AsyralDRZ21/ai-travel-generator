@@ -307,12 +307,14 @@ exports.getHistoricalWeather = async (req, res) => {
 };
 
 // ─── VISA REQUIREMENTS ────────────────────────────────────────────────────────
-// Authoritative curated database for Malaysian passport holders with Gemini AI fallback
+// Authoritative curated database for Malaysian passport holders with Gemini AI dynamic analysis for any nationality
 exports.getVisaInfo = async (req, res) => {
   try {
-    const { destination } = req.query;
+    const { destination, passport } = req.query;
     if (!destination) return res.status(400).json({ message: 'Destination country is required' });
 
+    const passportCountry = (passport || 'Malaysia').trim();
+    const isMalaysian = passportCountry.toLowerCase() === 'malaysia' || passportCountry.toLowerCase() === 'my';
     const dest = destination.toLowerCase().trim();
 
     const VISA_DB = {
@@ -945,47 +947,53 @@ exports.getVisaInfo = async (req, res) => {
       if (foundAlias) matchKey = ALIAS_MAP[foundAlias];
     }
 
-    // 3. Fuzzy check direct VISA_DB keys
-    if (!matchKey) {
-      matchKey = Object.keys(VISA_DB).find(k => dest.includes(k) || k.includes(dest));
+    // 3. For Malaysian passports, check curated VISA_DB keys
+    if (isMalaysian) {
+      if (!matchKey) {
+        matchKey = Object.keys(VISA_DB).find(k => dest.includes(k) || k.includes(dest));
+      }
+
+      if (matchKey && VISA_DB[matchKey]) {
+        const data = VISA_DB[matchKey];
+        return res.json({
+          ...data,
+          passport: 'Malaysia',
+          passportFlag: '🇲🇾',
+          searchedQuery: destination
+        });
+      }
     }
 
-    if (matchKey && VISA_DB[matchKey]) {
-      const data = VISA_DB[matchKey];
-      return res.json({
-        ...data,
-        searchedQuery: destination
-      });
-    }
-
-    // 4. If destination not in database, use Gemini AI fallback for dynamic Malaysian passport visa analysis
+    // 4. Use Gemini AI fallback for dynamic multi-country passport visa analysis
     if (ai) {
       try {
         const prompt = `You are an international consular & immigration travel expert.
-Analyze the tourist visa and entry requirements specifically for a MALAYSIAN CITIZEN holding a valid MALAYSIAN PASSPORT travelling to "${destination}".
+Analyze the tourist visa and entry requirements specifically for a citizen of "${passportCountry}" holding a valid "${passportCountry}" passport travelling to "${destination}".
 Respond ONLY with a valid JSON object (no markdown, no code blocks):
 {
+  "passport": "${passportCountry}",
+  "passportFlag": "Flag emoji for ${passportCountry}",
   "destination": "${destination}",
-  "flag": "Flag emoji",
+  "flag": "Flag emoji for destination",
   "required": "e.g. Visa Free, eVisa, Visa on Arrival, Visa Required, or ETA Required",
   "badgeType": "visa-free, k-eta, eta, evisa, visa-arrival, or visa-required",
   "duration": "e.g. Up to 30 days, 90 days, or 6 months",
-  "cost": "e.g. FREE or approximate MYR/foreign currency fee",
-  "processingDays": "e.g. Instant, 1-3 days, or 2 weeks",
-  "importantNotice": "Mention any mandatory pre-arrival electronic forms (like K-ETA, Visit Japan Web, SG Arrival Card, E-Customs declaration, etc.) or critical entry rules.",
+  "cost": "e.g. FREE or approximate fee in local/USD currency",
+  "processingDays": "e.g. Instant / On Arrival, 1-3 days, or 2 weeks",
+  "importantNotice": "Mention any mandatory pre-arrival electronic forms (like K-ETA, Visit Japan Web, SG Arrival Card, ESTA, ETA, etc.) or critical entry rules.",
   "officialPortal": {
     "name": "Official government or visa portal name",
     "url": "Official portal URL"
   },
-  "exemptionNotes": "Any age or passport exemption details if applicable",
+  "exemptionNotes": "Any age, biometrics, or passport exemption details if applicable",
   "documents": [
-    "Valid Malaysian passport (min 6 months validity)",
+    "Valid ${passportCountry} passport (min 6 months validity)",
     "Return flight ticket",
     "Proof of accommodation",
     "Travel insurance"
   ],
   "muslimNote": "Brief practical advice on Halal food and prayer facilities at this destination.",
-  "embassyUrl": "https://www.kln.gov.my"
+  "embassyUrl": "Official embassy or foreign affairs URL"
 }`;
         const aiText = await generateVisaWithFallback(prompt);
         if (aiText) {
@@ -994,6 +1002,8 @@ Respond ONLY with a valid JSON object (no markdown, no code blocks):
             const parsed = JSON.parse(jsonMatch[0]);
             return res.json({
               ...parsed,
+              passport: parsed.passport || passportCountry,
+              passportFlag: parsed.passportFlag || '🛂',
               searchedQuery: destination
             });
           }
@@ -1005,6 +1015,8 @@ Respond ONLY with a valid JSON object (no markdown, no code blocks):
 
     // 5. General fallback
     res.json({
+      passport: passportCountry,
+      passportFlag: '🛂',
       destination,
       flag: '🌐',
       required: 'Check Official Embassy',
@@ -1012,13 +1024,13 @@ Respond ONLY with a valid JSON object (no markdown, no code blocks):
       duration: 'Varies by visa type',
       cost: 'Check embassy schedule',
       processingDays: '3 - 15 working days',
-      importantNotice: 'Please verify entry requirements directly with the Malaysian Ministry of Foreign Affairs (KLN) or the destination\'s official embassy before travelling.',
+      importantNotice: `Please verify entry requirements directly with the ${passportCountry} Ministry of Foreign Affairs or the destination's official embassy before travelling.`,
       officialPortal: {
-        name: 'Ministry of Foreign Affairs Malaysia (KLN)',
+        name: 'Ministry of Foreign Affairs / Consular Affairs',
         url: 'https://www.kln.gov.my'
       },
       documents: [
-        'Valid Malaysian passport (minimum 6 months validity)',
+        `Valid ${passportCountry} passport (minimum 6 months validity)`,
         'Confirmed return / onward flight tickets',
         'Proof of accommodation (hotel booking / invitation)',
         'Travel insurance & proof of sufficient funds'

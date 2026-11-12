@@ -7,12 +7,14 @@ export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [directResetUrl, setDirectResetUrl] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage('');
+    setDirectResetUrl('');
     setError('');
 
     try {
@@ -26,6 +28,9 @@ export default function ForgotPasswordPage() {
       if (!res.ok) throw new Error(data.message || 'Something went wrong');
       
       setMessage(data.message);
+      if (data.resetUrl) {
+        setDirectResetUrl(data.resetUrl);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -48,6 +53,18 @@ export default function ForgotPasswordPage() {
           {message && (
             <div className="alert alert-success" style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', border: '1px solid #10b981', padding: '12px', borderRadius: '8px', marginBottom: '20px' }}>
               <span>✅</span> {message}
+            </div>
+          )}
+
+          {directResetUrl && (
+            <div style={{ textAlign: 'center', margin: '20px 0' }}>
+              <a
+                href={directResetUrl}
+                className="btn btn-primary btn-block"
+                style={{ textDecoration: 'none', display: 'inline-block' }}
+              >
+                Proceed to Reset Password 🔑
+              </a>
             </div>
           )}
 

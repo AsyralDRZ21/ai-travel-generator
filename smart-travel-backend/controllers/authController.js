@@ -381,7 +381,6 @@ exports.forgotPassword = async (req, res) => {
     res.status(500).json({ message: 'Error processing password reset request.' });
   }
 };
-};
 
 // @route   PUT /api/auth/reset-password/:token
 // @desc    Reset password using token

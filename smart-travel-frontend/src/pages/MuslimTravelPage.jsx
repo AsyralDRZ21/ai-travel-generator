@@ -395,19 +395,16 @@ export default function MuslimTravelPage() {
         {/* ════════════════════════════════════════════════════════════
             TAB: VISA INFO
         ════════════════════════════════════════════════════════════ */}
-        {/* ════════════════════════════════════════════════════════════
-            TAB: VISA INFO
-        ════════════════════════════════════════════════════════════ */}
         {activeTab === 'visa' && (
           <div className="mtp-section">
             <div className="mtp-section-header">
-              <h2>🛂 International Passport & Visa Requirements</h2>
+              <h2> International Passport & Visa Requirements</h2>
               <p>Check official visa rules, electronic authorizations (K-ETA, ETA, SGAC, ESTA), and entry requirements for any passport nationality.</p>
             </div>
             
             <div className="mtp-controls" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '14px', alignItems: 'end' }}>
               <div className="mtp-input-group">
-                <label>🛂 Your Passport / Nationality</label>
+                <label> Your Passport / Nationality</label>
                 <input
                   className="mtp-input"
                   placeholder="e.g. Malaysia, Indonesia, Singapore, United Kingdom"
@@ -418,7 +415,7 @@ export default function MuslimTravelPage() {
               </div>
 
               <div className="mtp-input-group">
-                <label>🔍 Destination Country or City</label>
+                <label> Destination Country or City</label>
                 <input
                   className="mtp-input"
                   placeholder="e.g. South Korea, Japan, United Kingdom, Australia"
@@ -435,22 +432,22 @@ export default function MuslimTravelPage() {
                   disabled={loading}
                   style={{ width: '100%', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 >
-                  {loading ? '⏳ Checking...' : '🔍 Check Visa Requirements'}
+                  {loading ? ' Checking...' : ' Check Visa Requirements'}
                 </button>
               </div>
             </div>
 
             {/* Quick Passport Pills */}
             <div className="mtp-quick-countries" style={{ marginTop: '12px', marginBottom: '8px' }}>
-              <span className="mtp-quick-label">🛂 Select Passport:</span>
+              <span className="mtp-quick-label"> Select Passport:</span>
               {[
-                { label: '🇲🇾 Malaysia', val: 'Malaysia' },
-                { label: '🇮🇩 Indonesia', val: 'Indonesia' },
-                { label: '🇸🇬 Singapore', val: 'Singapore' },
-                { label: '🇧🇳 Brunei', val: 'Brunei' },
-                { label: '🇬🇧 United Kingdom', val: 'United Kingdom' },
-                { label: '🇦🇺 Australia', val: 'Australia' },
-                { label: '🇺🇸 United States', val: 'United States' }
+                { label: 'Malaysia', val: 'Malaysia' },
+                { label: 'Indonesia', val: 'Indonesia' },
+                { label: 'Singapore', val: 'Singapore' },
+                { label: 'Brunei', val: 'Brunei' },
+                { label: 'United Kingdom', val: 'United Kingdom' },
+                { label: 'Australia', val: 'Australia' },
+                { label: 'United States', val: 'United States' }
               ].map(item => (
                 <button
                   key={item.val}
@@ -473,17 +470,17 @@ export default function MuslimTravelPage() {
             <div className="mtp-quick-countries">
               <span className="mtp-quick-label">⚡ Popular Destinations:</span>
               {[
-                { label: '🇰🇷 South Korea (K-ETA)', val: 'South Korea' },
-                { label: '🇯🇵 Japan', val: 'Japan' },
-                { label: '🇬🇧 United Kingdom', val: 'United Kingdom' },
-                { label: '🇦🇺 Australia (ETA)', val: 'Australia' },
-                { label: '🇸🇦 Saudi Arabia (Umrah)', val: 'Saudi Arabia' },
-                { label: '🇹🇭 Thailand (60d)', val: 'Thailand' },
-                { label: '🇨🇳 China', val: 'China' },
-                { label: '🇸🇬 Singapore (SGAC)', val: 'Singapore' },
-                { label: '🇮🇩 Indonesia (e-CD)', val: 'Indonesia' },
-                { label: '🇪🇺 Europe / Schengen', val: 'Schengen' },
-                { label: '🇹🇷 Turkey', val: 'Turkey' }
+                { label: 'South Korea (K-ETA)', val: 'South Korea' },
+                { label: 'Japan', val: 'Japan' },
+                { label: 'United Kingdom', val: 'United Kingdom' },
+                { label: 'Australia (ETA)', val: 'Australia' },
+                { label: 'Saudi Arabia (Umrah)', val: 'Saudi Arabia' },
+                { label: 'Thailand (60d)', val: 'Thailand' },
+                { label: 'China', val: 'China' },
+                { label: 'Singapore (SGAC)', val: 'Singapore' },
+                { label: 'Indonesia (e-CD)', val: 'Indonesia' },
+                { label: 'Europe / Schengen', val: 'Schengen' },
+                { label: 'Turkey', val: 'Turkey' }
               ].map(item => (
                 <button
                   key={item.val}

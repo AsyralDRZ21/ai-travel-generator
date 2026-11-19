@@ -631,7 +631,7 @@ export default function ItineraryPage() {
           {/* Hero Header */}
           <div className="itin-page-hero">
             <div className="itin-hero-badge">
-              <span className="itin-badge-sparkle">✨</span> AI-Powered Travel Engine
+              <span className="itin-badge-sparkle"></span> Smart Travel
             </div>
             <h1 className="itin-hero-title">
               Smart <span>Itinerary Generator</span>
@@ -746,7 +746,7 @@ export default function ItineraryPage() {
                       <span className="itin-section-sub">Pick start & end date — duration auto-aligns, or change days directly</span>
                     </div>
                     <span className="itin-duration-live-badge">
-                      🗓️ {form.duration} {form.duration === 1 ? 'Day' : 'Days'} {form.duration > 1 ? `(${form.duration - 1} Nights)` : ''}
+                       {form.duration} {form.duration === 1 ? 'Day' : 'Days'} {form.duration > 1 ? `(${form.duration - 1} Nights)` : ''}
                     </span>
                   </div>
                 </div>
@@ -755,7 +755,7 @@ export default function ItineraryPage() {
                   {/* Start Date */}
                   <div className="itin-date-box">
                     <label className="itin-date-label">
-                      <span>🛫 Departure Date</span>
+                      <span> Departure Date</span>
                       <span className="itin-date-badge-pill">Start</span>
                     </label>
                     <input
@@ -775,14 +775,14 @@ export default function ItineraryPage() {
 
                   {/* Flight Icon Divider */}
                   <div className="itin-flight-divider">
-                    <span className="itin-flight-icon">✈️</span>
+                    <span className="itin-flight-icon"></span>
                     <div className="itin-flight-line" />
                   </div>
 
                   {/* End Date */}
                   <div className="itin-date-box">
                     <label className="itin-date-label">
-                      <span>🛬 Return Date</span>
+                      <span> Return Date</span>
                       <span className="itin-date-badge-pill">End</span>
                     </label>
                     <input
@@ -803,7 +803,7 @@ export default function ItineraryPage() {
                   {/* Duration Stepper */}
                   <div className="itin-duration-box">
                     <label className="itin-date-label">
-                      <span>⏳ Duration</span>
+                      <span> Duration</span>
                       <span className="itin-date-badge-pill">Days</span>
                     </label>
                     <div className="itin-duration-counter">
@@ -839,7 +839,7 @@ export default function ItineraryPage() {
 
                 {/* Quick Duration Preset Chips */}
                 <div className="itin-quick-durations">
-                  <span className="itin-quick-label">⚡ Quick Duration:</span>
+                  <span className="itin-quick-label"> Quick Duration:</span>
                   {[
                     { days: 3, label: '3 Days', sub: 'Weekend' },
                     { days: 5, label: '5 Days', sub: 'Getaway' },
@@ -862,7 +862,7 @@ export default function ItineraryPage() {
                 {/* Date Summary Banner */}
                 {form.startDate && form.endDate && (
                   <div className="itin-date-summary-banner">
-                    <div className="itin-summary-icon">🗓️</div>
+                    <div className="itin-summary-icon"></div>
                     <div className="itin-summary-text">
                       <strong>{form.duration}-Day Journey Ready!</strong>
                       <span>{formatDisplayDate(form.startDate)} ➔ {formatDisplayDate(form.endDate)} ({form.duration > 1 ? `${form.duration - 1} nights` : 'day trip'})</span>
@@ -884,7 +884,7 @@ export default function ItineraryPage() {
 
                 <div className="itin-budget-grid">
                   <div className="itin-input-card">
-                    <label className="itin-input-card-label">👥 Travelers</label>
+                    <label className="itin-input-card-label"> Travelers</label>
                     <input
                       name="numberOfPeople"
                       type="number"
@@ -902,7 +902,7 @@ export default function ItineraryPage() {
                   </div>
 
                   <div className="itin-input-card">
-                    <label className="itin-input-card-label">💰 Estimated Budget <span className="itin-optional-tag">(Optional)</span></label>
+                    <label className="itin-input-card-label"> Estimated Budget <span className="itin-optional-tag">(Optional)</span></label>
                     <input
                       name="budget"
                       type="number"
@@ -920,7 +920,7 @@ export default function ItineraryPage() {
                   </div>
 
                   <div className="itin-input-card">
-                    <label className="itin-input-card-label">💱 Currency</label>
+                    <label className="itin-input-card-label"> Currency</label>
                     <select
                       name="currency"
                       className="form-select"
@@ -1079,9 +1079,9 @@ export default function ItineraryPage() {
                   </>
                 ) : (
                   <>
-                    <span className="itin-btn-sparkle">✨</span>
-                    <span>Generate Smart Itinerary</span>
-                    <span className="itin-btn-arrow">➔</span>
+                    <span className="itin-btn-sparkle"></span>
+                    <span>Generate  Itinerary</span>
+                    <span className="itin-btn-arrow"></span>
                   </>
                 )}
               </button>
@@ -1099,7 +1099,7 @@ export default function ItineraryPage() {
                       <div className="saved-itin-dest">📍 {itin.destination}</div>
                       <div className="saved-itin-meta">{itin.duration}d · {itin.travelStyle} · {new Date(itin.createdAt).toLocaleDateString()}</div>
                     </div>
-                    <button className="btn btn-danger btn-sm" onClick={() => handleDelete(itin._id)} title="Delete">🗑️</button>
+                    <button className="btn btn-danger btn-sm" onClick={() => handleDelete(itin._id)} title="Delete">remove</button>
                   </div>
                 ))}
               </div>

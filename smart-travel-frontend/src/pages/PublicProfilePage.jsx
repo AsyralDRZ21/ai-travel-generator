@@ -106,7 +106,7 @@ export default function PublicProfilePage() {
           <button onClick={() => navigate('/community')} className="btn-back-link">
             <span className="arrow">←</span> Back to Community
           </button>
-          <span className="public-breadcrumb-tag">🛂 Verified Traveler Passport</span>
+          <span className="public-breadcrumb-tag"> Verified Traveler Passport</span>
         </div>
 
         {/* Hero Header Card */}
@@ -128,7 +128,7 @@ export default function PublicProfilePage() {
                     <span className="badge-pill badge-admin">👑 Admin</span>
                   )}
                   {preferences?.isMuslimTraveller && (
-                    <span className="badge-pill badge-muslim">🕌 Muslim Traveller</span>
+                    <span className="badge-pill badge-muslim"> Muslim Traveller</span>
                   )}
                 </div>
               </div>
@@ -140,13 +140,13 @@ export default function PublicProfilePage() {
                   </span>
                 )}
                 <span className="meta-pill">
-                  📅 Joined {joinedDate}
+                   Joined {joinedDate}
                 </span>
                 <span className="meta-pill">
-                  🎒 {travelStyles.length} Travel {travelStyles.length === 1 ? 'Style' : 'Styles'}
+                   {travelStyles.length} Travel {travelStyles.length === 1 ? 'Style' : 'Styles'}
                 </span>
                 <span className="meta-pill">
-                  📢 {recentPosts.length} {recentPosts.length === 1 ? 'Broadcast' : 'Broadcasts'}
+                   {recentPosts.length} {recentPosts.length === 1 ? 'Broadcast' : 'Broadcasts'}
                 </span>
               </div>
             </div>

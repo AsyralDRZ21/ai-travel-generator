@@ -92,28 +92,6 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
-.btn-download-pdf {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #163300;
-  color: #9FE870;
-  border: none;
-  padding: 8px 18px;
-  border-radius: 999px;
-  font-size: 0.86rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 16px rgba(22, 51, 0, 0.25);
-}
-
-.btn-download-pdf:hover {
-  background: #1f4700;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(22, 51, 0, 0.35);
-}
-
 /* ── ITINERARY HEADER ── */
 .itin-header-split {
   margin-bottom: 24px;

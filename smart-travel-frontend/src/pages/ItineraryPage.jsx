@@ -3,7 +3,6 @@ import Navbar from '../components/Navbar';
 import { generateItinerary, getItineraries, deleteItinerary, updateItineraryPlan, suggestPlaces, searchHotels } from '../api/api';
 import MapComponent from '../components/MapComponent';
 import WeatherWidget from '../components/WeatherWidget';
-import html2pdf from 'html2pdf.js';
 import './ItineraryPage.css';
 
 import { TRAVEL_STYLES, STYLE_ICONS } from '../utils/constants';
@@ -445,129 +444,6 @@ export default function ItineraryPage() {
   const handleSelectHotelTier = (tier) => {
     setHotelTier(tier);
     fetchHotels(tier);
-  };
-
-  const handleExportPDF = () => {
-    if (!currentPlan) return;
-
-    // Build a clean off-screen HTML doc for PDF
-    const pdfRoot = document.createElement('div');
-    pdfRoot.style.cssText = 'font-family: Inter, Arial, sans-serif; color: #161616; background: #ffffff; padding: 24px; max-width: 800px; margin: 0 auto;';
-
-    // ── Cover Header ──
-    const header = document.createElement('div');
-    header.style.cssText = 'margin-bottom: 28px; padding-bottom: 20px; border-bottom: 3px solid #9FE870;';
-    header.innerHTML = `
-      <h1 style="font-size: 2rem; font-weight: 800; color: #161616; margin: 0 0 8px;">${activeItinerary.destination}</h1>
-      <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;">
-        <span style="background: rgba(159,232,112,0.15); color: #163300; border: 1px solid rgba(159,232,112,0.4); padding: 4px 12px; border-radius: 999px; font-size: 0.82rem; font-weight: 700;">${activeItinerary.duration} Days</span>
-        <span style="background: rgba(6,182,212,0.1); color: #0e7490; border: 1px solid rgba(6,182,212,0.3); padding: 4px 12px; border-radius: 999px; font-size: 0.82rem; font-weight: 700;">${activeItinerary.travelStyle}</span>
-        ${activeItinerary.budget > 0 ? `<span style="background: rgba(16,185,129,0.1); color: #059669; border: 1px solid rgba(16,185,129,0.3); padding: 4px 12px; border-radius: 999px; font-size: 0.82rem; font-weight: 700;">${activeItinerary.currency} ${Number(activeItinerary.budget).toLocaleString()}</span>` : ''}
-      </div>
-      <p style="font-size: 0.95rem; color: #4a4a4a; line-height: 1.6; margin: 0;">${currentPlan.overview || ''}</p>
-    `;
-    pdfRoot.appendChild(header);
-
-    // ── Each Day as a separate page ──
-    currentPlan.days?.forEach((day, dayIdx) => {
-      const daySection = document.createElement('div');
-      if (dayIdx > 0) daySection.style.pageBreakBefore = 'always';
-      daySection.style.cssText += 'padding-top: 20px;';
-
-      // Day Title
-      const dayTitle = document.createElement('div');
-      dayTitle.style.cssText = 'font-size: 1.3rem; font-weight: 800; color: #161616; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid #9FE870;';
-      dayTitle.textContent = day.title || `Day ${day.day}`;
-      daySection.appendChild(dayTitle);
-
-      // Activities
-      const acts = getActivitiesForDay(day);
-      acts.forEach((act, actIdx) => {
-        const actDiv = document.createElement('div');
-        actDiv.style.cssText = 'display: flex; gap: 14px; margin-bottom: 16px; padding: 14px 16px; background: #f9fafb; border: 1px solid #eaeaea; border-radius: 10px;';
-        
-        const numCircle = document.createElement('div');
-        numCircle.style.cssText = 'flex: 0 0 28px; height: 28px; border-radius: 50%; background: #163300; color: #9FE870; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem;';
-        numCircle.textContent = actIdx + 1;
-        
-        const content = document.createElement('div');
-        content.style.cssText = 'flex: 1;';
-        
-        let metaHtml = '';
-        if (act.time) metaHtml += `<span style="color: #0e7490; font-weight: 600;">🕐 ${act.time}</span>`;
-        if (act.estimatedCost > 0) metaHtml += `<span style="color: #059669; font-weight: 600; margin-left: 12px;">💰 ${activeItinerary.currency} ${act.estimatedCost}</span>`;
-        
-        content.innerHTML = `
-          <div style="font-weight: 700; font-size: 1rem; color: #161616; margin-bottom: 4px;">${act.activity}</div>
-          <div style="font-size: 0.88rem; color: #4a4a4a; line-height: 1.5;">${act.description || ''}</div>
-          ${metaHtml ? `<div style="display: flex; gap: 12px; margin-top: 6px; font-size: 0.8rem;">${metaHtml}</div>` : ''}
-        `;
-        
-        actDiv.appendChild(numCircle);
-        actDiv.appendChild(content);
-        daySection.appendChild(actDiv);
-      });
-
-      // Accommodation
-      if (day.accommodation) {
-        const accomDiv = document.createElement('div');
-        accomDiv.style.cssText = 'background: rgba(159,232,112,0.08); border: 1px solid rgba(159,232,112,0.3); padding: 12px 16px; border-radius: 10px; margin-top: 14px; margin-bottom: 8px;';
-        accomDiv.innerHTML = `<strong style="display: block; color: #163300; font-size: 0.82rem; text-transform: uppercase; font-weight: 800; margin-bottom: 4px;">🏨 Night Stay</strong><span style="color: #161616; font-size: 0.9rem;">${day.accommodation}</span>`;
-        daySection.appendChild(accomDiv);
-      }
-
-      // Meals
-      if (day.meals?.length > 0) {
-        const mealsDiv = document.createElement('div');
-        mealsDiv.style.cssText = 'background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.3); padding: 12px 16px; border-radius: 10px;';
-        mealsDiv.innerHTML = `
-          <strong style="display: block; color: #059669; font-size: 0.82rem; text-transform: uppercase; font-weight: 800; margin-bottom: 6px;">🍽️ Dining Suggestions</strong>
-          <ul style="padding-left: 18px; margin: 0; font-size: 0.88rem; color: #4a4a4a;">
-            ${day.meals.map(m => `<li style="margin-bottom: 3px;">${m}</li>`).join('')}
-          </ul>
-        `;
-        daySection.appendChild(mealsDiv);
-      }
-
-      pdfRoot.appendChild(daySection);
-    });
-
-    // ── Packing List on its own page ──
-    if (currentPlan.packingList?.length > 0) {
-      const packSection = document.createElement('div');
-      packSection.style.cssText = 'page-break-before: always; padding-top: 20px;';
-
-      const packTitle = document.createElement('div');
-      packTitle.style.cssText = 'font-size: 1.3rem; font-weight: 800; color: #161616; margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid #9FE870;';
-      packTitle.textContent = '🎒 Smart Packing List';
-      packSection.appendChild(packTitle);
-
-      const grid = document.createElement('div');
-      grid.style.cssText = 'display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;';
-      currentPlan.packingList.forEach(item => {
-        const cell = document.createElement('div');
-        cell.style.cssText = 'background: #f9fafb; border: 1px solid #eaeaea; padding: 10px 14px; border-radius: 8px;';
-        cell.innerHTML = `
-          <div style="font-weight: 700; font-size: 0.88rem; color: #161616;">✅ ${item.item}</div>
-          <div style="font-size: 0.78rem; color: #666; margin-top: 2px;">${item.reason || ''}</div>
-        `;
-        grid.appendChild(cell);
-      });
-      packSection.appendChild(grid);
-      pdfRoot.appendChild(packSection);
-    }
-
-    // Generate PDF
-    const opt = {
-      margin:       10,
-      filename:     `${activeItinerary.destination.replace(/[^a-z0-9]/gi, '_')}_Itinerary.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak:    { mode: ['css', 'legacy'], avoid: ['.pdf-activity'] }
-    };
-
-    html2pdf().set(opt).from(pdfRoot).save();
   };
 
   const currentPlan = activeItinerary?.plan;
@@ -1114,13 +990,10 @@ export default function ItineraryPage() {
         <div className="split-layout-active fade-in">
           
           {/* LEFT: TIMELINE FEED */}
-          <div className="timeline-panel" id="itinerary-pdf-content">
-            <div className="itin-top-bar" data-html2canvas-ignore>
+          <div className="timeline-panel">
+            <div className="itin-top-bar">
               <button className="btn-back-planner" onClick={() => setActiveItinerary(null)}>
                 ← Back to Planner
-              </button>
-              <button className="btn-download-pdf" onClick={handleExportPDF}>
-                📥 Download PDF
               </button>
             </div>
 

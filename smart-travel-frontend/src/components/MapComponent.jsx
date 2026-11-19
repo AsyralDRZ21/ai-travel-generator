@@ -1,86 +1,158 @@
-import { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import { useEffect, useRef, useCallback, useState } from 'react';
+import { GoogleMap, useJsApiLoader, MarkerF, InfoWindowF } from '@react-google-maps/api';
 
-// Fix Leaflet default icon issue
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-let DefaultIcon = L.icon({
-  iconUrl: icon,
-  shadowUrl: iconShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-});
-L.Marker.prototype.options.icon = DefaultIcon;
-
-// Custom numbered icon generator with Wise Green styling
-const createNumberedIcon = (number) => {
-  return L.divIcon({
-    className: 'custom-div-icon',
-    html: `<div style="background-color: #163300; color: #9FE870; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 4px 10px rgba(22,51,0,0.4); font-weight: 800; font-size: 13px; border: 2.5px solid #ffffff;">${number}</div>`,
-    iconSize: [30, 30],
-    iconAnchor: [15, 15]
-  });
+const containerStyle = {
+  width: '100%',
+  height: '100%',
+  borderRadius: '16px',
 };
 
-function MapBoundsFitter({ markers }) {
-  const map = useMap();
-  useEffect(() => {
-    if (markers && markers.length > 0) {
-      const validMarkers = markers.filter(m => m.lat && m.lng);
-      if (validMarkers.length > 0) {
-        const bounds = L.latLngBounds(validMarkers.map(m => [m.lat, m.lng]));
-        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
-      }
-    }
-  }, [markers, map]);
-  return null;
-}
+const defaultCenter = { lat: 3.139, lng: 101.6869 }; // KL fallback
+
+const mapOptions = {
+  disableDefaultUI: false,
+  zoomControl: true,
+  mapTypeControl: true,
+  streetViewControl: true,
+  fullscreenControl: true,
+  styles: [
+    {
+      featureType: 'poi',
+      elementType: 'labels',
+      stylers: [{ visibility: 'on' }],
+    },
+  ],
+};
+
+// Custom numbered marker using SVG
+const createNumberedMarkerIcon = (number) => ({
+  url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36">
+      <circle cx="18" cy="18" r="16" fill="#163300" stroke="white" stroke-width="2.5"/>
+      <text x="18" y="23" text-anchor="middle" fill="#9FE870" font-size="14" font-weight="800" font-family="Arial,sans-serif">${number}</text>
+    </svg>
+  `)}`,
+  scaledSize: { width: 36, height: 36 },
+  anchor: { x: 18, y: 18 },
+});
 
 export default function MapComponent({ markers = [] }) {
-  const defaultCenter = [51.505, -0.09]; // Fallback
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '',
+  });
+
+  const mapRef = useRef(null);
+  const [selectedMarker, setSelectedMarker] = useState(null);
 
   const validMarkers = markers.filter(m => m.lat && m.lng);
-  const initialCenter = validMarkers.length > 0 ? [validMarkers[0].lat, validMarkers[0].lng] : defaultCenter;
+
+  const onLoad = useCallback((map) => {
+    mapRef.current = map;
+  }, []);
+
+  // Fit bounds when markers change
+  useEffect(() => {
+    if (!mapRef.current || validMarkers.length === 0) return;
+
+    if (validMarkers.length === 1) {
+      mapRef.current.panTo({ lat: validMarkers[0].lat, lng: validMarkers[0].lng });
+      mapRef.current.setZoom(14);
+    } else {
+      const bounds = new window.google.maps.LatLngBounds();
+      validMarkers.forEach(m => bounds.extend({ lat: m.lat, lng: m.lng }));
+      mapRef.current.fitBounds(bounds, { top: 50, bottom: 50, left: 50, right: 50 });
+    }
+  }, [validMarkers]);
+
+  if (loadError) {
+    return (
+      <div style={{
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#f8faf5',
+        borderRadius: '16px',
+        color: '#163300',
+        fontWeight: 600,
+        fontSize: '0.9rem',
+        padding: '24px',
+        textAlign: 'center',
+      }}>
+        Unable to load Google Maps. Please check your API key.
+      </div>
+    );
+  }
+
+  if (!isLoaded) {
+    return (
+      <div style={{
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#f8faf5',
+        borderRadius: '16px',
+      }}>
+        <div style={{
+          width: '32px',
+          height: '32px',
+          border: '3px solid #e0e0e0',
+          borderTopColor: '#9FE870',
+          borderRadius: '50%',
+          animation: 'spin 0.8s linear infinite',
+        }} />
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
+
+  const center = validMarkers.length > 0
+    ? { lat: validMarkers[0].lat, lng: validMarkers[0].lng }
+    : defaultCenter;
 
   return (
-    <MapContainer 
-      center={initialCenter} 
-      zoom={11} 
-      scrollWheelZoom={true} 
-      style={{ height: '100%', width: '100%', background: '#eef2ea', borderRadius: '16px' }}
+    <GoogleMap
+      mapContainerStyle={containerStyle}
+      center={center}
+      zoom={12}
+      onLoad={onLoad}
+      options={mapOptions}
     >
-      {/* 
-        Esri World Street Map:
-        - 100% Free public tile service with global CDN
-        - NO API Key needed
-        - NO authentication error, NO "API KEY REQUIRED" watermark, NO QR code
-        - Clear, beautiful cartography for global travel destinations
-      */}
-      <TileLayer
-        attribution='Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom'
-        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
-        maxZoom={19}
-      />
-      
-      <MapBoundsFitter markers={validMarkers} />
-
       {validMarkers.map((marker, idx) => (
-        <Marker 
-          key={idx} 
-          position={[marker.lat, marker.lng]}
-          icon={createNumberedIcon(idx + 1)}
-        >
-          <Popup>
-            <div style={{ color: '#163300', padding: '4px' }}>
-              <strong style={{ fontSize: '1rem', color: '#163300' }}>{idx + 1}. {marker.title}</strong>
-              {marker.description && <p style={{ margin: '6px 0 0', fontSize: '0.85rem', color: '#556b4a', lineHeight: 1.4 }}>{marker.description}</p>}
-            </div>
-          </Popup>
-        </Marker>
+        <MarkerF
+          key={`${marker.lat}-${marker.lng}-${idx}`}
+          position={{ lat: marker.lat, lng: marker.lng }}
+          icon={createNumberedMarkerIcon(idx + 1)}
+          onClick={() => setSelectedMarker(idx)}
+        />
       ))}
-    </MapContainer>
+
+      {selectedMarker !== null && validMarkers[selectedMarker] && (
+        <InfoWindowF
+          position={{
+            lat: validMarkers[selectedMarker].lat,
+            lng: validMarkers[selectedMarker].lng,
+          }}
+          onCloseClick={() => setSelectedMarker(null)}
+        >
+          <div style={{ color: '#163300', padding: '4px', maxWidth: '220px' }}>
+            <strong style={{ fontSize: '0.95rem', color: '#163300' }}>
+              {selectedMarker + 1}. {validMarkers[selectedMarker].title}
+            </strong>
+            {validMarkers[selectedMarker].description && (
+              <p style={{
+                margin: '6px 0 0',
+                fontSize: '0.82rem',
+                color: '#556b4a',
+                lineHeight: 1.4,
+              }}>
+                {validMarkers[selectedMarker].description}
+              </p>
+            )}
+          </div>
+        </InfoWindowF>
+      )}
+    </GoogleMap>
   );
 }

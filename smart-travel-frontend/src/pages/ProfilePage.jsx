@@ -203,50 +203,41 @@ export default function ProfilePage() {
             <div className="card-body">
               <div className="input-field-group">
                 <label className="input-label">Full Name</label>
-                <div className="input-with-icon">
-                  <span className="field-icon"></span>
-                  <input 
-                    type="text" 
-                    name="fullName"
-                    className="styled-input" 
-                    placeholder="Your Full Name"
-                    value={formData.fullName}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
+                <input 
+                  type="text" 
+                  name="fullName"
+                  className="styled-input" 
+                  placeholder="Your Full Name"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  required
+                />
               </div>
 
               <div className="input-field-group">
                 <label className="input-label">Email Address</label>
-                <div className="input-with-icon">
-                  <span className="field-icon"></span>
-                  <input 
-                    type="email" 
-                    name="email"
-                    className="styled-input" 
-                    placeholder="name@example.com"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
+                <input 
+                  type="email" 
+                  name="email"
+                  className="styled-input" 
+                  placeholder="name@example.com"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                />
               </div>
 
               <div className="input-field-group">
                 <label className="input-label">New Password (Optional)</label>
-                <div className="input-with-icon">
-                  <span className="field-icon"></span>
-                  <input 
-                    type="password" 
-                    name="password"
-                    className="styled-input" 
-                    placeholder="Leave blank to keep current password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    minLength="6"
-                  />
-                </div>
+                <input 
+                  type="password" 
+                  name="password"
+                  className="styled-input" 
+                  placeholder="Leave blank to keep current password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  minLength="6"
+                />
                 <span className="field-helper">Minimum 6 characters if you wish to change it.</span>
               </div>
             </div>
@@ -265,38 +256,31 @@ export default function ProfilePage() {
             <div className="card-body">
               <div className="input-field-group">
                 <label className="input-label">Home City / Country</label>
-                <div className="input-with-icon">
-                  <span className="field-icon"></span>
-                  <input 
-                    type="text" 
-                    name="region"
-                    className="styled-input" 
-                    placeholder="e.g. Kuala Lumpur, Malaysia"
-                    value={socialInfo.region}
-                    onChange={handleSocialChange}
-                  />
-                </div>
+                <input 
+                  type="text" 
+                  name="region"
+                  className="styled-input" 
+                  placeholder="e.g. Kuala Lumpur, Malaysia"
+                  value={socialInfo.region}
+                  onChange={handleSocialChange}
+                />
               </div>
 
               <div className="input-field-group">
                 <label className="input-label">WhatsApp / Phone</label>
-                <div className="input-with-icon">
-                  <span className="field-icon"></span>
-                  <input 
-                    type="text" 
-                    name="phone"
-                    className="styled-input" 
-                    placeholder="+60 12-345 6789"
-                    value={socialInfo.phone}
-                    onChange={handleSocialChange}
-                  />
-                </div>
+                <input 
+                  type="text" 
+                  name="phone"
+                  className="styled-input" 
+                  placeholder="+60 12-345 6789"
+                  value={socialInfo.phone}
+                  onChange={handleSocialChange}
+                />
               </div>
 
-              <div className="input-field-group">
-                <label className="input-label">TikTok Username (Optional)</label>
-                <div className="input-with-icon">
-                  <span className="field-icon"></span>
+              <div className="social-inputs-grid">
+                <div className="input-field-group">
+                  <label className="input-label">TikTok (Optional)</label>
                   <input 
                     type="text" 
                     name="tiktok"
@@ -306,12 +290,9 @@ export default function ProfilePage() {
                     onChange={handleSocialChange}
                   />
                 </div>
-              </div>
 
-              <div className="input-field-group">
-                <label className="input-label">Instagram Username (Optional)</label>
-                <div className="input-with-icon">
-                  <span className="field-icon"></span>
+                <div className="input-field-group">
+                  <label className="input-label">Instagram (Optional)</label>
                   <input 
                     type="text" 
                     name="instagram"
@@ -322,6 +303,7 @@ export default function ProfilePage() {
                   />
                 </div>
               </div>
+              <span className="field-helper" style={{ marginTop: '-12px' }}>Social media accounts for your community profile.</span>
             </div>
           </div>
 

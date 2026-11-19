@@ -128,17 +128,19 @@ export default function StatsPage() {
             {/* ── FAVOURITE STYLE BANNER ── */}
             <div className="fav-style-banner">
               <div style={{ fontSize: '2.5rem', display: 'flex', alignItems: 'center' }}>
-                <img src={STYLE_ICONS[stats.favouriteStyle] || '/backpack.png'} alt="Style" style={{ width: 64, height: 64, opacity: 0.9 }} />
+                <img src={STYLE_ICONS[stats.favouriteStyle] || '/backpack.png'} alt="Style" style={{ width: 64, height: 64, opacity: 0.95 }} />
               </div>
               <div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>Your Favourite Travel Style</div>
-                <div style={{ fontSize: '1.6rem', fontWeight: 800, background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', textTransform: 'capitalize' }}>
+                <div style={{ fontSize: '0.78rem', color: '#4d6935', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700, marginBottom: 4 }}>
+                  Your Favourite Travel Style
+                </div>
+                <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#163300', textTransform: 'capitalize', letterSpacing: '-0.01em' }}>
                   {stats.favouriteStyle}
                 </div>
               </div>
               <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 4 }}>Most visited destination</div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: 4 }}>Most visited destination</div>
+                <div style={{ fontSize: '1.15rem', fontWeight: 700, color: '#163300', display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'flex-end' }}>
                   <img src="/Maps.png" alt="Pin" style={{ width: 18, height: 18 }} /> {stats.uniqueDestinations[0] || 'None yet'}
                 </div>
               </div>

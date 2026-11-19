@@ -100,13 +100,14 @@
 .fav-style-banner {
   display: flex;
   align-items: center;
-  gap: 20px;
-  background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.08));
-  border: 1px solid rgba(99,102,241,0.25);
-  border-radius: var(--radius-lg);
+  gap: 22px;
+  background: linear-gradient(135deg, rgba(159, 232, 112, 0.18) 0%, rgba(244, 252, 238, 0.95) 100%);
+  border: 1.5px solid rgba(159, 232, 112, 0.5);
+  border-radius: var(--radius-lg, 18px);
   padding: 22px 28px;
   margin-bottom: 24px;
   flex-wrap: wrap;
+  box-shadow: 0 4px 18px rgba(22, 51, 0, 0.04);
 }
 
 /* ── CHARTS ROW ── */

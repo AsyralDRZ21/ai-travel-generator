@@ -224,6 +224,7 @@
   margin-bottom: 22px;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--glass-border, #eaeaea);
+  min-height: 72px;
 }
 
 .card-header.flex-between {
@@ -266,7 +267,7 @@
 .card-body {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
   flex: 1;
 }
 
@@ -284,23 +285,21 @@
   letter-spacing: 0.03em;
 }
 
-.input-with-icon {
-  position: relative;
-  display: flex;
-  align-items: center;
+.social-inputs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
-.field-icon {
-  position: absolute;
-  left: 14px;
-  font-size: 1.05rem;
-  pointer-events: none;
-  opacity: 0.7;
+@media (max-width: 500px) {
+  .social-inputs-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .styled-input {
   width: 100%;
-  padding: 12px 16px 12px 42px;
+  padding: 12px 16px;
   background: #fdfdfd;
   border: 1px solid var(--glass-border, #eaeaea);
   border-radius: 10px;

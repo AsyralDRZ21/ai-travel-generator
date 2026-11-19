@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { generateItinerary, getItineraries, deleteItinerary, updateItineraryPlan, suggestPlaces, searchHotels } from '../api/api';
 import MapComponent from '../components/MapComponent';
@@ -59,6 +60,7 @@ const getDaysBetween = (s1, s2) => {
 };
 
 export default function ItineraryPage() {
+  const location = useLocation();
   const [form, setForm] = useState({
     destination: '', duration: 3, budget: '', currency: 'MYR',
     travelStyle: 'cultural', numberOfPeople: 1,
@@ -116,7 +118,14 @@ export default function ItineraryPage() {
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
-  useEffect(() => { fetchSaved(); }, []);
+  useEffect(() => {
+    fetchSaved();
+    if (location.state?.selectedItinerary) {
+      setActiveItinerary(location.state.selectedItinerary);
+      setActiveDay(0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [location.state]);
 
   const fetchSaved = async () => {
     try {
@@ -992,7 +1001,10 @@ export default function ItineraryPage() {
           {/* LEFT: TIMELINE FEED */}
           <div className="timeline-panel">
             <div className="itin-top-bar">
-              <button className="btn-back-planner" onClick={() => setActiveItinerary(null)}>
+              <button className="btn-back-planner" onClick={() => {
+                setActiveItinerary(null);
+                window.history.replaceState({}, document.title);
+              }}>
                 ← Back to Planner
               </button>
             </div>

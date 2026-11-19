@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import ReviewModal from '../components/ReviewModal';
 import './TripHistoryPage.css';
@@ -19,10 +19,10 @@ const FILTER_OPTIONS = ['all', 'planned', 'ongoing', 'completed'];
 
 export default function TripHistoryPage() {
   const { token } = useAuth();
+  const navigate = useNavigate();
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [expandedId, setExpandedId] = useState(null);
   const [filter, setFilter] = useState('all');
   const [updatingId, setUpdatingId] = useState(null);
   const [reviewTrip, setReviewTrip] = useState(null);
@@ -206,40 +206,13 @@ export default function TripHistoryPage() {
                   })}
                 </div>
 
-                {/* Expanded Day Details */}
-                {expandedId === trip._id && (
-                  <div style={{ marginTop: 16, borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 16 }}>
-                    <h4 style={{ color: 'var(--text-primary)', marginBottom: 12 }}>Detailed Itinerary:</h4>
-                    {trip.plan?.days?.map((day) => (
-                      <div key={day.day} style={{ marginBottom: 16, background: 'rgba(0,0,0,0.2)', padding: 12, borderRadius: 8 }}>
-                        <h5 style={{ color: 'var(--accent-primary)' }}>Day {day.day}: {day.title}</h5>
-                        {day.activities && Array.isArray(day.activities) ? (
-                          <ul style={{ listStyle: 'none', padding: 0, margin: '8px 0', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                            {day.activities.map((act, idx) => (
-                              <li key={idx} style={{ marginBottom: 4 }}>{ic('Maps', 16)} <strong>{act.time || `Stop ${idx + 1}`}:</strong> {act.activity}</li>
-                            ))}
-                            <li style={{ marginTop: 8, color: 'var(--accent-tertiary)' }}>{ic('transit', 16)} Lodging: {day.accommodation || 'None'}</li>
-                          </ul>
-                        ) : (
-                          <ul style={{ listStyle: 'none', padding: 0, margin: '8px 0', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                            {day.morning && <li style={{ marginBottom: 4 }}>{ic('walk', 16)} <strong>Morning:</strong> {day.morning.activity}</li>}
-                            {day.afternoon && <li style={{ marginBottom: 4 }}>{ic('walk', 16)} <strong>Afternoon:</strong> {day.afternoon.activity}</li>}
-                            {day.evening && <li style={{ marginBottom: 4 }}>{ic('walk', 16)} <strong>Evening:</strong> {day.evening.activity}</li>}
-                            <li style={{ marginTop: 8, color: 'var(--accent-tertiary)' }}>{ic('transit', 16)} Lodging: {day.accommodation}</li>
-                          </ul>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-
                 {/* Actions Row */}
                 <div className="history-actions">
                   <button
                     className="btn-history-view"
-                    onClick={() => setExpandedId(expandedId === trip._id ? null : trip._id)}
+                    onClick={() => navigate('/itinerary', { state: { selectedItinerary: trip } })}
                   >
-                    {expandedId === trip._id ? <>{ic('check', 16)} Hide Details</> : <>{ic('itinerary', 16)} View Trip</>}
+                    {ic('itinerary', 16)} View Trip
                   </button>
                   {/* Write Review — only for completed trips */}
                   {status === 'completed' && (
